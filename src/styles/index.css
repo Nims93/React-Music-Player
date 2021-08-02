@@ -1,0 +1,53 @@
+:root, :before, :after {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, Noto Naskh Arabic UI, Arial, sans-serif;
+  font-weight: bold;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.player {
+  background-color: #282c34;
+  height: 70px;
+  position: relative;
+}
+
+.player .seek-bar-wrapper {
+  height: 10px;
+  width: 100%;
+  position: absolute;
+}
+
+.player .seek-bar-wrapper .seek-bar {
+  position: relative;
+  width: 50%;
+  height: inherit;
+  background-color: green;
+}
+
+.player .control-buttons-elapsed-time {
+  position: relative;
+  top: 15px;
+}
+
+.player .control-buttons-elapsed-time .audio-time-display {
+  color: white;
+  font-size: 1.7em;
+}
+
+.player .control-buttons-elapsed-time button {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+/*# sourceMappingURL=index.css.map */

@@ -1,0 +1,50 @@
+
+:root, :before, :after {
+  box-sizing: border-box;
+  font-size: 10px;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, Noto Naskh Arabic UI, Arial, sans-serif;
+  font-weight: bold;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.player {
+  background-color: hsl(220, 13%, 18%);
+  height: 70px;
+  position: relative;
+
+  .seek-bar-wrapper {
+    height: 10px;
+    width: 100%;
+    position: absolute;
+
+    .seek-bar {
+      position: relative;
+      width: 50%;
+      height: inherit;
+      background-color: green;
+    }
+  }
+
+  .control-buttons-elapsed-time {
+    position: relative;
+    top: 15px;
+
+    .audio-time-display {
+      color: white;
+      font-size: 1.7em;
+    }
+
+    button {
+      appearance: none;
+    }
+  }
+}
