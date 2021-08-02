@@ -21,9 +21,15 @@ export default function AudioPlayer(props) {
     }, 1000)
   }, [isPlaying, trackProgress])
 
-  // function convertToMinsAndSecs(seconds) {
+  function convertToMinsAndSecs(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time - minutes * 60);
 
-  // }
+    let secondsValue;
+    secondsValue = (seconds < 10) ? secondsValue = '0' + seconds : secondsValue = seconds;
+
+    return `${minutes}:${secondsValue}`
+  }
 
   function playPause() {
     if (isPlaying) {
@@ -68,7 +74,11 @@ export default function AudioPlayer(props) {
         <source src={media} type="audio/mp3"></source>
       </audio>
       <div className='control-buttons-elapsed-time'>
-        <AudioTimeDisplay className='audio-time-display' currentDuration={(trackLoaded) ? trackProgress : `${NaN}`} songLength={(trackLoaded) ? audioRef.current.duration : `${NaN}`}/>
+        <AudioTimeDisplay 
+          className='audio-time-display' 
+          currentDuration={(trackLoaded) ? convertToMinsAndSecs(trackProgress) : `${NaN}`} 
+          songLength={(trackLoaded) ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`}
+        />
         <MediaButton id="prev" icon="prevSVG" onClick={prevSong} />
         <MediaButton id="rewind-10-sec" icon="rewind10SVG" onClick={seekMinus10Seconds} />
         <MediaButton id="play-pause" icon="play/pauseSVG" onClick={playPause} />
