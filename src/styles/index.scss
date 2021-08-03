@@ -1,5 +1,6 @@
-
-:root, :before, :after {
+:root,
+:before,
+:after {
   box-sizing: border-box;
   font-size: 10px;
 }
@@ -22,14 +23,16 @@ body {
   position: relative;
 
   .seek-bar-wrapper {
-    height: 10px;
+    height: 5px;
     width: 100%;
+    padding: 5px 0;
     position: absolute;
+    cursor: pointer;
 
     .seek-bar {
       position: relative;
-      width: 50%;
-      height: inherit;
+      // width: 50%;
+      height: 40%;
       background-color: green;
     }
   }

@@ -23,15 +23,15 @@ body {
 }
 
 .player .seek-bar-wrapper {
-  height: 10px;
+  height: 9px;
   width: 100%;
   position: absolute;
+  cursor: pointer;
 }
 
 .player .seek-bar-wrapper .seek-bar {
   position: relative;
-  width: 50%;
-  height: inherit;
+  height: 40%;
   background-color: green;
 }
 

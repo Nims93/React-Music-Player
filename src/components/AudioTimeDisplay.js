@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function AudioTimeDisplay(props) {
-  const { className, currentDuration, songLength} = props;
+  const { className, currentDuration, songLength } = props;
 
   return (
     <div className={className}>
@@ -9,5 +9,5 @@ export default function AudioTimeDisplay(props) {
       <span> / </span>
       <span>{songLength}</span>
     </div>
-  )
-} 
+  );
+}
