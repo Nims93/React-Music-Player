@@ -2,14 +2,23 @@ import React, { useRef, useEffect, useState } from 'react';
 import SeekBar from './SeekBar';
 import MediaButton from './MediaButton';
 import AudioTimeDisplay from './AudioTimeDisplay';
-import media from './../media/Castr6 (Y.ACG) - Untold Stories _ @PacmanTV.mp3';
+import VolumeSlider from './VolumeSlider';
 
 export default function AudioPlayer(props) {
+  // const audio = new Audio(media);
+  const { handleNext, handlePrev, track } = props;
   const [trackLoaded, setTrackLoaded] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
-  const timeoutRef = useRef();
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    console.log('track switcher useEffect called');
+    const audio = new Audio(track);
+    audioRef.current = audio;
+    audioRef.current.addEventListener('canplay', () => setTrackLoaded(true));
+  }, [track]);
 
   useEffect(() => {
     //if isPlaying (bool), run callback
@@ -29,14 +38,6 @@ export default function AudioPlayer(props) {
 
     setTrackProgress(newNum);
     audioRef.current.currentTime = newNum;
-
-    // console.log(
-    //   `New Time: ${convertToMinsAndSecs(
-    //     newNum
-    //   )} in seconds: ${newNum}, audioRef:${
-    //     audioRef.current.currentTime
-    //   } / trackProgress: ${trackProgress}`
-    // );
   }
 
   function convertToMinsAndSecs(time) {
@@ -84,13 +85,32 @@ export default function AudioPlayer(props) {
   }
 
   function prevSong() {
-    if (audioRef.current.currentTime > 5) {
+    if (audioRef.current.currentTime > 7) {
+      setTrackProgress(0);
       audioRef.current.currentTime = 0;
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      // audioRef.current.currentTime = 0;
+      // setTrackProgress(0);
+      setTrackLoaded(false);
+      clearTimeout(timeoutRef);
+      handlePrev();
     }
   }
 
   function nextSong() {
-    console.log('next called!');
+    // if repeat button? set currentTime and track Progress to 0
+    // else call handleNext prop
+    audioRef.current.pause();
+    setIsPlaying(false);
+    clearTimeout(timeoutRef);
+    setTrackLoaded(false);
+    handleNext();
+  }
+
+  function handleVolume(volume) {
+    audioRef.current.volume = volume;
   }
 
   return (
@@ -100,9 +120,9 @@ export default function AudioPlayer(props) {
         totalDuration={trackLoaded ? audioRef.current.duration : 0}
         onMouseDown={seekBarScrub}
       />
-      <audio ref={audioRef} onCanPlay={() => setTrackLoaded(true)}>
+      {/* <audio ref={audioRef} onCanPlay={() => setTrackLoaded(true)}>
         <source src={media} type="audio/mp3"></source>
-      </audio>
+      </audio> */}
       <div className="control-buttons-elapsed-time">
         <AudioTimeDisplay
           className="audio-time-display"
@@ -128,6 +148,10 @@ export default function AudioPlayer(props) {
           onClick={seekPlus10Seconds}
         />
         <MediaButton id="next" icon="nextSVG" onClick={nextSong} />
+
+        {/* <MediaButton id="" /> */}
+
+        <VolumeSlider handleVolume={handleVolume} />
       </div>
     </div>
   );
