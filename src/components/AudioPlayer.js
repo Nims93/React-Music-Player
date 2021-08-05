@@ -4,8 +4,9 @@ import MediaButton from './MediaButton';
 import AudioTimeDisplay from './AudioTimeDisplay';
 import VolumeSlider from './VolumeSlider';
 
+let repeatSong = false;
+
 export default function AudioPlayer(props) {
-  // const audio = new Audio(media);
   const { handleNext, handlePrev, track } = props;
   const [trackLoaded, setTrackLoaded] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
@@ -17,7 +18,25 @@ export default function AudioPlayer(props) {
     console.log('track switcher useEffect called');
     const audio = new Audio(track);
     audioRef.current = audio;
-    audioRef.current.addEventListener('canplay', () => setTrackLoaded(true));
+    audioRef.current.addEventListener('canplay', () => {
+      if (isPlaying) {
+        setTrackLoaded(true);
+        audioRef.current.play();
+      } else {
+        setTrackLoaded(true);
+      }
+    });
+
+    audioRef.current.addEventListener('ended', () => {
+      if (repeatSong) {
+        audioRef.current.currentTime = 0;
+        setTrackProgress(0);
+        audioRef.current.play();
+      } else {
+        nextSong();
+        setIsPlaying(false);
+      }
+    });
   }, [track]);
 
   useEffect(() => {
@@ -90,9 +109,9 @@ export default function AudioPlayer(props) {
       audioRef.current.currentTime = 0;
     } else {
       audioRef.current.pause();
-      setIsPlaying(false);
+      // setIsPlaying(false);
       // audioRef.current.currentTime = 0;
-      // setTrackProgress(0);
+      setTrackProgress(0);
       setTrackLoaded(false);
       clearTimeout(timeoutRef);
       handlePrev();
@@ -103,7 +122,8 @@ export default function AudioPlayer(props) {
     // if repeat button? set currentTime and track Progress to 0
     // else call handleNext prop
     audioRef.current.pause();
-    setIsPlaying(false);
+    // setIsPlaying(false);
+    setTrackProgress(0);
     clearTimeout(timeoutRef);
     setTrackLoaded(false);
     handleNext();
@@ -149,7 +169,17 @@ export default function AudioPlayer(props) {
         />
         <MediaButton id="next" icon="nextSVG" onClick={nextSong} />
 
-        {/* <MediaButton id="" /> */}
+        <MediaButton
+          id="repeat"
+          icon="repeatSVG"
+          onClick={() => (repeatSong = !repeatSong)}
+        />
+
+        {/* <RepeatButton
+          id="repeat"
+          icon="repeatSVG"
+          onClick={() => (repeatSong = !repeatSong)}
+        /> */}
 
         <VolumeSlider handleVolume={handleVolume} />
       </div>
