@@ -11,11 +11,12 @@ export default function AudioPlayer(props) {
   const [trackLoaded, setTrackLoaded] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(null);
+  const audioRef = useRef(new Audio());
   const timeoutRef = useRef(null);
 
   useEffect(() => {
     console.log('track switcher useEffect called');
+    audioRef.current.pause();
     const audio = new Audio(track);
     audioRef.current = audio;
     audioRef.current.addEventListener('canplay', () => {
@@ -34,13 +35,11 @@ export default function AudioPlayer(props) {
         audioRef.current.play();
       } else {
         nextSong();
-        setIsPlaying(false);
       }
     });
   }, [track]);
 
   useEffect(() => {
-    //if isPlaying (bool), run callback
     if (isPlaying) {
       timeoutRef.current = setTimeout(() => {
         const audioTime = audioRef.current.currentTime;
@@ -82,7 +81,7 @@ export default function AudioPlayer(props) {
 
   function seekMinus10Seconds() {
     if (audioRef.current.currentTime <= 10) {
-      audioRef.current.currentTime = 0;
+      // audioRef.current.currentTime = 0;
       setTrackProgress(0);
     } else {
       const time = audioRef.current.currentTime - 10;
@@ -108,7 +107,7 @@ export default function AudioPlayer(props) {
       setTrackProgress(0);
       audioRef.current.currentTime = 0;
     } else {
-      audioRef.current.pause();
+      // audioRef.current.pause();
       // setIsPlaying(false);
       // audioRef.current.currentTime = 0;
       setTrackProgress(0);
@@ -121,7 +120,7 @@ export default function AudioPlayer(props) {
   function nextSong() {
     // if repeat button? set currentTime and track Progress to 0
     // else call handleNext prop
-    audioRef.current.pause();
+    // audioRef.current.pause();
     // setIsPlaying(false);
     setTrackProgress(0);
     clearTimeout(timeoutRef);

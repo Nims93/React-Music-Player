@@ -1,3 +1,8 @@
+@import './bodyStyles';
+@import './trackListStyles';
+@import './playerStyles';
+@import './variables';
+
 :root,
 :before,
 :after {
@@ -9,45 +14,20 @@ body {
   margin: 0;
   font-family: Roboto, Noto Naskh Arabic UI, Arial, sans-serif;
   font-weight: bold;
+  color: hsla(255, 255, 255, 0.8);
+  background-color: hsl(0, 0%, 18.82%);
 }
 
-#root {
+.App {
   width: 100vw;
   height: 100vh;
   position: relative;
 }
 
-.player {
-  background-color: hsl(220, 13%, 18%);
-  height: 70px;
-  position: relative;
-
-  .seek-bar-wrapper {
-    height: 5px;
-    width: 100%;
-    padding: 5px 0;
-    position: absolute;
-    cursor: pointer;
-
-    .seek-bar {
-      position: relative;
-      // width: 50%;
-      height: 40%;
-      background-color: green;
-    }
-  }
-
-  .control-buttons-elapsed-time {
-    position: relative;
-    top: 15px;
-
-    .audio-time-display {
-      color: white;
-      font-size: 1.7em;
-    }
-
-    button {
-      appearance: none;
-    }
-  }
+button {
+  background: none;
+  border: 1px solid black;
+  border-radius: 3px;
+  cursor: pointer;
+  color: white;
 }

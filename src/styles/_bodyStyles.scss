@@ -1,0 +1,39 @@
+@import './variables';
+
+.visualiser-wrapper {
+  height: calc(100vh - var(--playerHeight));
+  // height: 100%;
+
+  .artwork-wrapper {
+    // display: flex;
+    // flex-direction: vertical;
+    // justify-content: center;
+    max-width: 350px;
+    height: 55em;
+    border-radius: 10px;
+    background-color: hsl(0, 0%, 6%);
+    margin: auto;
+    // margin-top: 10%;
+    position: relative;
+
+    img {
+      display: block;
+      width: 70%;
+      height: 50%;
+      border-radius: 50%;
+      margin: auto;
+      object-fit: contain;
+      // margin: 0 auto;
+      // margin-top: 4em;
+    }
+
+    h2 {
+      color: white;
+      // display: block;
+      // width: 95%;
+      margin: 0 auto;
+      text-align: center;
+      font-size: 3em;
+    }
+  }
+}
