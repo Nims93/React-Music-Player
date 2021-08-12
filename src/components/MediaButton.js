@@ -1,10 +1,10 @@
 import React from 'react';
 
 export default function MediaButton(props) {
-  const { id, icon, onClick: callbackProp } = props;
+  const { className, icon, onClick: callbackProp } = props;
 
   return (
-    <button id={id} onClick={callbackProp}>
+    <button className={className} onClick={callbackProp}>
       {icon}
     </button>
   );

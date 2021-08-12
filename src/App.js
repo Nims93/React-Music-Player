@@ -87,10 +87,10 @@ const SONGS = [
 
 function App() {
   const [trackIndex, setTrackIndex] = useState(0);
-  // console.log(`${SONGS[trackIndex].songUrl}`);
-  // function handleTracklistVisibility() {
-  //   setTracksVisible(!tracksVisible);
-  // }
+  // const [trackProgress, setTrackProgress] = useState([0, 0]);
+  // const [trackLoaded, setTrackLoaded] = useState(false);
+  const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] =
+    useState(null);
 
   function handlePrev() {
     if (trackIndex - 1 < 0) {
@@ -113,6 +113,17 @@ function App() {
     setTrackIndex(idx);
   }
 
+  // function handleTrackProgress(progressAndDurationArray, trackLoadedBool) {
+  //   setTrackProgress(progressAndDurationArray);
+  //   setTrackLoaded(trackLoadedBool);
+  // }
+
+  function handleTrackProgress2(AudioDislayComponent) {
+    setTrackTimeElapsedComponent(AudioDislayComponent);
+  }
+
+  // function
+
   return (
     <div className="App">
       <div className="visualiser-wrapper">
@@ -120,6 +131,9 @@ function App() {
           // handleTracklistVisibility={handleTracklistVisibility}
           trackName={SONGS[trackIndex].name}
           imgUrl={SONGS[trackIndex].imgUrl}
+          // trackTimeElapsed={trackProgress}
+          // trackLoaded={trackLoaded}
+          trackDurationComponent={trackTimeElapsedComponent}
         />
         {/* {tracksVisible && <TrackListView SONGS={SONGS} visible={tracksVisible} />} */}
         <TrackListView
@@ -133,6 +147,7 @@ function App() {
         handlePrev={handlePrev}
         handleNext={handleNext}
         track={SONGS[trackIndex].songUrl}
+        handleTrackProgressForTrackInfoDisplay={handleTrackProgress2}
       />
     </div>
   );

@@ -1,25 +1,106 @@
-.track-list {
-  width: 35em;
-  display: inline-block;
-  position: fixed;
-  right: 0;
-  top: 0;
+@import './variables';
 
-  ul {
+//side menu slide effect styles
+// .track-list {
+//   position: fixed;
+//   top: 0;
+//   right: 0;
+//   margin: auto;
+//   display: grid;
+//   height: calc(100vh - var(--playerHeight));
+
+//side menu push effect stlyes
+.track-list {
+  position: relative;
+  display: flex;
+  height: calc(100vh - var(--playerHeight));
+
+  button.list-toggle.active {
+    svg {
+      transform: rotate(180deg);
+    }
+
+    &:hover svg {
+      transform: rotate(180deg) scale(1.1);
+      fill: #ffffff;
+      filter: blur(0.5px);
+      transition: all 0.1s linear;
+    }
+  }
+
+  button.list-toggle {
+    position: absolute;
+    height: 4em;
+    width: 4em;
+    top: 50%;
+    left: -50px;
+    z-index: 3;
+
+    &:hover svg {
+      fill: #ffffff;
+      filter: blur(0.5px);
+      transform: scale(1.1);
+      transition: all 0.1s linear;
+    }
+
+    svg {
+      fill: hsl(0, 0%, 80%);
+      transition: all 0.1s linear;
+    }
+  }
+
+  //slide in stlyes
+  // ul.songs-list.hidden {
+  //   width: 0;
+  //   visibility: hidden;
+  //   opacity: 0;
+  //   transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  // }
+
+  //push in styles
+  ul.songs-list.hidden {
+    width: 0;
+    visibility: hidden;
+    margin-right: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    // scrollbar-color: ;
+  }
+
+  ul.songs-list {
+    height: var(--trackInfoHeight);
+    background-color: #282c34;
+    visibility: visible;
     list-style-type: none;
-    margin: 0;
-    padding: 1em;
+    overflow-y: scroll;
+    // padding-right: 1em;
+    border-radius: 10px;
+
+    // margin: auto 2em auto 0;
+    margin: auto 0;
+    width: 350px;
+    opacity: 1;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 
     li {
       display: flex;
       align-items: center;
+      height: 60px;
       padding: 0.3em 0;
-      border-top: 0.1em black solid;
+      border-top: 0.1em hsl(0, 0%, 35%) solid;
+      cursor: pointer;
 
       &:last-of-type {
-        border-bottom: 0.1em black solid;
+        border-bottom: 0.1em hsl(0, 0%, 35%) solid;
       }
-      // &:
+
+      &:hover {
+        background-color: hsla(0, 0%, 35%, 0.25);
+      }
+
+      &:hover svg {
+        fill: white;
+      }
 
       img {
         height: 3.5em;
@@ -28,9 +109,44 @@
         margin: 0.2em 1em;
       }
 
-      span {
+      .song-name {
+        width: 100%;
         font-size: 1.7em;
+        overflow-x: hidden;
+        overflow-y: hidden;
       }
+
+      &:hover .icon svg {
+        fill: white;
+      }
+
+      .icon {
+        height: 3em;
+        width: 3em;
+        margin-right: 0.5em;
+        // background-color: hsla(0, 0%, 0%, 0.2);
+
+        &:hover svg {
+          fill: white;
+        }
+
+        svg {
+          fill: hsl(0, 0%, 80%);
+        }
+      }
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      visibility: hidden;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: hsl(220, 13%, 18%);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: hsl(0, 0%, 35%);
     }
   }
 }

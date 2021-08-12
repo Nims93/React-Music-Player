@@ -14,7 +14,9 @@ export default function SeekBar(props) {
       <div
         className="seek-bar"
         style={{ width: `${(trackProgress / totalDuration) * 100}%` }}
-      ></div>
+      >
+        {/* <div className="seek-bar-knob"></div> */}
+      </div>
     </div>
   );
 }

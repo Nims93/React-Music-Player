@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import SongListToggle from './SongListToggle';
+import { ReactComponent as VolumeIcon } from './../assets/volume-icon.svg';
 
 export default function TrackListView(props) {
   const { SONGS, trackIndex, handleTrackSelect } = props;
-  const [toggleList, setToggleList] = useState(false);
+  const [toggleListVisibility, setToggleList] = useState(false);
+
   // const toRender = toggle ? <ul>{createList(SONGS)}</ul> : null;
 
   function handleToggle() {
-    setToggleList(!toggleList);
+    setToggleList(!toggleListVisibility);
   }
 
   function createList(songs, currentlyPlayingSongIndex) {
@@ -27,7 +29,10 @@ export default function TrackListView(props) {
           onClickCapture={handleClick}
         >
           <img src={songObj.imgUrl} alt={`track artwork for ${songObj.name}`} />
-          <span>{songObj.name}</span>
+          <div className="song-name">{songObj.name}</div>
+          <div className="icon">
+            <VolumeIcon />
+          </div>
         </li>
       );
     });
@@ -38,14 +43,18 @@ export default function TrackListView(props) {
     e.stopPropagation();
     const id = e.currentTarget.id;
     const index = Number(id.slice(id.lastIndexOf('-') + 1));
-    console.log(index);
     handleTrackSelect(index);
   }
 
   return (
     <div className="track-list">
       <SongListToggle handleTracklistVisibility={handleToggle} />
-      {toggleList && <ul>{createList(SONGS, trackIndex)}</ul>}
+      <ul
+        // style={toggleListVisibility ? { display: 'none' } : null}
+        className={toggleListVisibility ? 'songs-list' : 'songs-list hidden'}
+      >
+        {createList(SONGS, trackIndex)}
+      </ul>
     </div>
   );
 }

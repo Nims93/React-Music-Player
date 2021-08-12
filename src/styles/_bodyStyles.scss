@@ -1,39 +1,58 @@
 @import './variables';
 
-.visualiser-wrapper {
-  height: calc(100vh - var(--playerHeight));
-  // height: 100%;
+.App {
+  height: 100vh;
 
-  .artwork-wrapper {
-    // display: flex;
-    // flex-direction: vertical;
-    // justify-content: center;
-    max-width: 350px;
-    height: 55em;
-    border-radius: 10px;
-    background-color: hsl(0, 0%, 6%);
-    margin: auto;
-    // margin-top: 10%;
+  .visualiser-wrapper {
+    height: calc(100vh - var(--playerHeight));
+    width: 100%;
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    // display: flex;
+    overflow: hidden;
 
-    img {
-      display: block;
-      width: 70%;
-      height: 50%;
-      border-radius: 50%;
+    .track-info {
+      display: flex;
+      flex-direction: column;
+      width: 350px;
+      height: var(--trackInfoHeight);
+      border-radius: 10px;
+      background-color: hsl(0, 0%, 6%);
+      background-image: linear-gradient(
+        315deg,
+        #282c34 5%,
+        green 50%,
+        #282c34 100%
+      );
       margin: auto;
-      object-fit: contain;
-      // margin: 0 auto;
-      // margin-top: 4em;
-    }
 
-    h2 {
-      color: white;
-      // display: block;
-      // width: 95%;
-      margin: 0 auto;
-      text-align: center;
-      font-size: 3em;
+      box-shadow: 0 0 30px 30px hsl(210, 7%, 5%),
+        0 0 60px 60px hsl(217, 14%, 18%), 0 0 100px 90px hsl(218, 29%, 16%);
+
+      img {
+        display: block;
+        width: 23em;
+        height: 23em;
+        border-radius: 50%;
+        margin: auto;
+        object-fit: cover;
+      }
+
+      h2 {
+        color: hsl(0, 0%, 85%);
+        margin: auto;
+        text-align: center;
+        font-size: 3em;
+      }
+
+      .elapsed-time-wrapper {
+        color: hsl(0, 0%, 85%);
+        font-size: 1.7em;
+        max-width: 90%;
+        margin: auto;
+        text-align: center;
+      }
     }
   }
 }

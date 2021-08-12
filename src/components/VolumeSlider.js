@@ -5,19 +5,17 @@ export default function VolumeSlider(props) {
 
   const [volume, setVolume] = useState(100);
   return (
-    <div>
-      <input
-        type="range"
-        value={volume}
-        step="0.0125"
-        min="0"
-        max="1"
-        className="volume"
-        onChange={(e) => {
-          setVolume(e.target.value);
-          handleVolume(e.target.value);
-        }}
-      ></input>
-    </div>
+    <input
+      type="range"
+      value={volume}
+      step="0.0125"
+      min="0"
+      max="1"
+      className="volume"
+      onChange={(e) => {
+        setVolume(e.target.value);
+        handleVolume(e.target.value);
+      }}
+    ></input>
   );
 }

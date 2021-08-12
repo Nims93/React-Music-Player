@@ -5,9 +5,9 @@ export default function AudioTimeDisplay(props) {
 
   return (
     <div className={className}>
-      <span>{currentDuration}</span>
-      <span> / </span>
-      <span>{songLength}</span>
+      <span className="track-elapsed-duration">{currentDuration}</span>
+      <span className="track-duration-separator"> / </span>
+      <span className="track-total-duration">{songLength}</span>
     </div>
   );
 }

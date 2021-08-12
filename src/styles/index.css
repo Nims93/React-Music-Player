@@ -1,67 +1,171 @@
 :root {
   --playerHeight: 70px;
+  --color: hsl(0, 0%, 18.82%);
+  --trackInfoHeight: 55em;
 }
 
-.visualiser-wrapper {
+.App {
+  height: 100vh;
+}
+
+.App .visualiser-wrapper {
   height: calc(100vh - var(--playerHeight));
+  width: 100%;
+  position: relative;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr min-content;
+      grid-template-columns: 1fr -webkit-min-content;
+      grid-template-columns: 1fr min-content;
+  overflow: hidden;
 }
 
-.visualiser-wrapper .artwork-wrapper {
-  max-width: 350px;
-  height: 55em;
+.App .visualiser-wrapper .track-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 350px;
+  height: var(--trackInfoHeight);
   border-radius: 10px;
   background-color: #0f0f0f;
+  background-image: linear-gradient(315deg, #282c34 5%, green 50%, #282c34 100%);
   margin: auto;
-  position: relative;
+  -webkit-box-shadow: 0 0 30px 30px #0c0d0e, 0 0 60px 60px #272c34, 0 0 100px 90px #1d2635;
+          box-shadow: 0 0 30px 30px #0c0d0e, 0 0 60px 60px #272c34, 0 0 100px 90px #1d2635;
 }
 
-.visualiser-wrapper .artwork-wrapper img {
+.App .visualiser-wrapper .track-info img {
   display: block;
-  width: 70%;
-  height: 50%;
+  width: 23em;
+  height: 23em;
   border-radius: 50%;
   margin: auto;
-  -o-object-fit: contain;
-     object-fit: contain;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
-.visualiser-wrapper .artwork-wrapper h2 {
-  color: white;
-  margin: 0 auto;
+.App .visualiser-wrapper .track-info h2 {
+  color: #d9d9d9;
+  margin: auto;
   text-align: center;
   font-size: 3em;
 }
 
+.App .visualiser-wrapper .track-info .elapsed-time-wrapper {
+  color: #d9d9d9;
+  font-size: 1.7em;
+  max-width: 90%;
+  margin: auto;
+  text-align: center;
+}
+
+:root {
+  --playerHeight: 70px;
+  --color: hsl(0, 0%, 18.82%);
+  --trackInfoHeight: 55em;
+}
+
 .track-list {
-  width: 35em;
-  display: inline-block;
-  position: fixed;
-  right: 0;
-  top: 0;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: calc(100vh - var(--playerHeight));
 }
 
-.track-list ul {
+.track-list button.list-toggle.active svg {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.track-list button.list-toggle.active:hover svg {
+  -webkit-transform: rotate(180deg) scale(1.1);
+          transform: rotate(180deg) scale(1.1);
+  fill: #ffffff;
+  -webkit-filter: blur(0.5px);
+          filter: blur(0.5px);
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.track-list button.list-toggle {
+  position: absolute;
+  height: 4em;
+  width: 4em;
+  top: 50%;
+  left: -50px;
+  z-index: 3;
+}
+
+.track-list button.list-toggle:hover svg {
+  fill: #ffffff;
+  -webkit-filter: blur(0.5px);
+          filter: blur(0.5px);
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.track-list button.list-toggle svg {
+  fill: #cccccc;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.track-list ul.songs-list.hidden {
+  width: 0;
+  visibility: hidden;
+  margin-right: 0;
+  opacity: 0;
+  -webkit-transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.track-list ul.songs-list {
+  height: var(--trackInfoHeight);
+  background-color: #282c34;
+  visibility: visible;
   list-style-type: none;
-  margin: 0;
-  padding: 1em;
+  overflow-y: scroll;
+  border-radius: 10px;
+  margin: auto 0;
+  width: 350px;
+  opacity: 1;
+  -webkit-transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.track-list ul li {
+.track-list ul.songs-list li {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  height: 60px;
   padding: 0.3em 0;
-  border-top: 0.1em black solid;
+  border-top: 0.1em #595959 solid;
+  cursor: pointer;
 }
 
-.track-list ul li:last-of-type {
-  border-bottom: 0.1em black solid;
+.track-list ul.songs-list li:last-of-type {
+  border-bottom: 0.1em #595959 solid;
 }
 
-.track-list ul li img {
+.track-list ul.songs-list li:hover {
+  background-color: rgba(89, 89, 89, 0.25);
+}
+
+.track-list ul.songs-list li:hover svg {
+  fill: white;
+}
+
+.track-list ul.songs-list li img {
   height: 3.5em;
   width: 3.5em;
   -o-object-fit: cover;
@@ -69,75 +173,372 @@
   margin: 0.2em 1em;
 }
 
-.track-list ul li span {
+.track-list ul.songs-list li .song-name {
+  width: 100%;
   font-size: 1.7em;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.track-list ul.songs-list li:hover .icon svg {
+  fill: white;
+}
+
+.track-list ul.songs-list li .icon {
+  height: 3em;
+  width: 3em;
+  margin-right: 0.5em;
+}
+
+.track-list ul.songs-list li .icon:hover svg {
+  fill: white;
+}
+
+.track-list ul.songs-list li .icon svg {
+  fill: #cccccc;
+}
+
+.track-list ul.songs-list::-webkit-scrollbar {
+  width: 10px;
+  visibility: hidden;
+}
+
+.track-list ul.songs-list::-webkit-scrollbar-track {
+  background-color: #282c34;
+}
+
+.track-list ul.songs-list::-webkit-scrollbar-thumb {
+  background-color: #595959;
 }
 
 :root {
   --playerHeight: 70px;
+  --color: hsl(0, 0%, 18.82%);
+  --trackInfoHeight: 55em;
 }
 
 .player {
   background-color: #282c34;
   height: var(--playerHeight);
   width: 100%;
-  position: relative;
+  position: fixed;
+  bottom: 0;
 }
 
-.player .seek-bar-wrapper {
+.seek-bar-wrapper {
   height: 5px;
   width: 100%;
-  padding: 5px 0;
+  padding: 7px 0;
   position: absolute;
   top: -12%;
   cursor: pointer;
-  border: 1px white solid;
 }
 
-.player .seek-bar-wrapper .seek-bar {
+.seek-bar-wrapper .seek-bar {
   position: absolute;
-  top: 40%;
-  width: 1%;
-  height: 20%;
+  top: 45%;
+  width: 0%;
+  height: 15%;
   background-color: green;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
 }
 
-.player .seek-bar-wrapper:hover .seek-bar {
-  height: 50%;
+.seek-bar-wrapper .seek-bar .seek-bar-knob {
+  width: 0px;
+  height: 0px;
+  border-radius: 50%;
+  background-color: green;
+  position: absolute;
+  right: -6px;
+  top: -3px;
+  opacity: 0;
+  -webkit-transition: height width opacity 0.1s linear;
+  transition: height width opacity 0.1s linear;
+  -webkit-transition-delay: 0.1s;
+          transition-delay: 0.1s;
+}
+
+.seek-bar-wrapper:hover .seek-bar {
+  height: 40%;
   -webkit-transform: translateY(-2px);
           transform: translateY(-2px);
+  -webkit-transition: height transform 0.1s linear;
+  transition: height transform 0.1s linear;
 }
 
-.player .control-buttons-elapsed-time {
-  position: relative;
-  top: 15px;
+.seek-bar-wrapper:hover .seek-bar .seek-bar-knob {
+  width: 13px;
+  height: 13px;
+  opacity: 1;
 }
 
-.player .control-buttons-elapsed-time .audio-time-display {
+.control-buttons {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 0.85fr 1fr 0.85fr;
+      grid-template-columns: 0.85fr 1fr 0.85fr;
+  height: 100%;
+}
+
+.control-buttons button {
+  height: 3.5em;
+  width: 3.5em;
+}
+
+.control-buttons button:hover svg {
+  fill: #ffffff;
+  -webkit-filter: blur(0.6px);
+          filter: blur(0.6px);
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.control-buttons button svg {
+  fill: #cccccc;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.control-buttons .repeat.active {
   color: white;
-  font-size: 1.7em;
 }
 
-.player .control-buttons-elapsed-time button {
+.control-buttons .repeat.active::after {
+  content: '1';
+  font-size: 0.8em;
+  position: absolute;
+  top: 27%;
+  left: 36%;
+  color: #cccccc;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.control-buttons .repeat.active:hover::after {
+  color: white;
+  -webkit-filter: blur(0.5px);
+          filter: blur(0.5px);
+  -webkit-transform: scale(1.18);
+          transform: scale(1.18);
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.control-buttons .repeat {
+  height: 2em;
+  width: 2em;
+  -ms-grid-column-align: end;
+      justify-self: end;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  position: relative;
+}
+
+.control-buttons .playpause-seek-buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.control-buttons .playpause-seek-buttons .rewind-10-sec,
+.control-buttons .playpause-seek-buttons .skip-10-sec {
+  height: 2.1em;
+  width: 2.1em;
+  position: relative;
+}
+
+.control-buttons .playpause-seek-buttons .rewind-10-sec::after,
+.control-buttons .playpause-seek-buttons .skip-10-sec::after {
+  content: '10';
+  color: #cccccc;
+  font-size: 0.8em;
+  top: 27%;
+  left: 27%;
+  position: absolute;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.control-buttons .playpause-seek-buttons .rewind-10-sec:hover::after,
+.control-buttons .playpause-seek-buttons .skip-10-sec:hover::after {
+  color: white;
+  -webkit-filter: blur(0.4px);
+          filter: blur(0.4px);
+  -webkit-transform: scale(1.18);
+          transform: scale(1.18);
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
+}
+
+.control-buttons .playpause-seek-buttons .play-pause {
+  height: 5em;
+  width: 5em;
+  margin: 0;
+}
+
+.control-buttons .playpause-seek-buttons .prev,
+.control-buttons .playpause-seek-buttons .next {
+  height: 3.5em;
+  width: 3.5em;
+}
+
+.control-buttons .volume-controls-wrapper {
+  -ms-grid-column-align: start;
+      justify-self: start;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  position: relative;
+  /*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
+    how to remove the virtical space around the range input in IE*/
+}
+
+.control-buttons .volume-controls-wrapper .volume-indicator {
+  height: 2em;
+  width: 2em;
+  margin: auto;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range'] {
+  width: 80px;
+  margin: 5.6px 0;
+  background-color: transparent;
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  position: absolute;
+  top: 23%;
+  left: 107%;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']:focus {
+  outline: none;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-webkit-slider-runnable-track {
+  background: #cccccc;
+  border: 0px solid rgba(1, 1, 1, 0);
+  border: 0;
+  width: 100%;
+  height: 1.8px;
+  cursor: pointer;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-webkit-slider-thumb {
+  margin-top: -5.6px;
+  width: 13px;
+  height: 13px;
+  background: #cccccc;
+  border: 0px solid rgba(204, 204, 204, 0);
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']:focus::-webkit-slider-runnable-track {
+  background: #ffffff;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-moz-range-track {
+  background: #cccccc;
+  border: 0px solid rgba(1, 1, 1, 0);
+  border: 0;
+  width: 100%;
+  height: 1.8px;
+  cursor: pointer;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  background: #cccccc;
+  border: 0px solid rgba(204, 204, 204, 0);
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  border-width: 6.6px 0;
+  color: transparent;
+  width: 100%;
+  height: 1.8px;
+  cursor: pointer;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-ms-fill-lower {
+  background: #000000;
+  border: 0px solid rgba(1, 1, 1, 0);
+  border: 0;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-ms-fill-upper {
+  background: #cccccc;
+  border: 0px solid rgba(1, 1, 1, 0);
+  border: 0;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']::-ms-thumb {
+  width: 13px;
+  height: 13px;
+  background: #cccccc;
+  border: 0px solid rgba(204, 204, 204, 0);
+  border: 0;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 0px;
+  /*Needed to keep the Edge thumb centred*/
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']:focus::-ms-fill-lower {
+  background: #cccccc;
+}
+
+.control-buttons .volume-controls-wrapper input[type='range']:focus::-ms-fill-upper {
+  background: #ffffff;
+}
+
+@supports (-ms-ime-align: auto) {
+  .control-buttons .volume-controls-wrapper {
+    /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
+  }
+  .control-buttons .volume-controls-wrapper input[type='range'] {
+    margin: 0;
+    /*Edge starts the margin from the thumb, not the track as other browsers do*/
+  }
 }
 
 :root {
   --playerHeight: 70px;
+  --color: hsl(0, 0%, 18.82%);
+  --trackInfoHeight: 55em;
 }
 
-:root,
+*,
 :before,
 :after {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
   font-size: 10px;
 }
 
 body {
-  margin: 0;
   font-family: Roboto, Noto Naskh Arabic UI, Arial, sans-serif;
   font-weight: bold;
   color: rgba(255, 255, 255, 0.8);
@@ -145,16 +546,22 @@ body {
 }
 
 .App {
-  width: 100vw;
-  height: 100vh;
   position: relative;
 }
 
 button {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  padding: none;
   background: none;
-  border: 1px solid black;
+  border: none;
   border-radius: 3px;
   cursor: pointer;
   color: white;
+}
+
+svg {
+  padding: 0;
 }
 /*# sourceMappingURL=index.css.map */
