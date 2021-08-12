@@ -93,16 +93,6 @@ export default function AudioPlayer(props) {
     handleTrackProgressForTrackInfoDisplay(trackTimeElapsedComponent);
   }, [trackProgress, trackLoaded, track]);
 
-  function seekBarScrub(mouseDownCoord, seekBarWidth) {
-    const percentage = ((mouseDownCoord / seekBarWidth) * 100) / 100;
-    const newNum = percentage * Math.round(audioRef.current.duration);
-
-    clearTimeout(timeoutRef);
-
-    setTrackProgress(newNum);
-    audioRef.current.currentTime = newNum;
-  }
-
   function playPause() {
     if (isPlaying) {
       setIsPlaying(!isPlaying);
@@ -136,6 +126,23 @@ export default function AudioPlayer(props) {
     }
   }
 
+  function seekBarScrub(mouseDownCoord, seekBarWidth) {
+    //bug isn't here
+    //when green seek bar is clicked, it's total length is passed
+    //to this fucntinon creating the erroneous seek bar movement
+    //e.currentTarget.offsetWidth not working
+    console.log(mouseDownCoord, seekBarWidth);
+
+    const percentage = ((mouseDownCoord / seekBarWidth) * 100) / 100;
+    const newNum = percentage * Math.round(audioRef.current.duration);
+    // console.log(mouseDownCoord, seekBarWidth, `${percentage}%`);
+
+    clearTimeout(timeoutRef);
+
+    setTrackProgress(newNum);
+    audioRef.current.currentTime = newNum;
+  }
+
   function prevSong() {
     if (audioRef.current.currentTime > 7) {
       setTrackProgress(0);
@@ -159,7 +166,6 @@ export default function AudioPlayer(props) {
     setTrackProgress(0);
     clearTimeout(timeoutRef);
     setTrackLoaded(false);
-    console.log('handle next');
     handleNext();
   }
 
@@ -185,7 +191,7 @@ export default function AudioPlayer(props) {
       <SeekBar
         trackProgress={trackProgress}
         totalDuration={trackLoaded ? audioRef.current.duration : 0}
-        onMouseDown={seekBarScrub}
+        seekBarScrub={seekBarScrub}
       />
 
       <div className="control-buttons">
