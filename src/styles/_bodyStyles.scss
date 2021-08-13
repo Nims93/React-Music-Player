@@ -1,57 +1,98 @@
 @import './variables';
 
-.App {
-  height: 100vh;
+.visualiser-wrapper {
+  height: calc(100vh - var(--playerHeight));
+  width: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  // display: flex;
+  overflow: hidden;
 
-  .visualiser-wrapper {
-    height: calc(100vh - var(--playerHeight));
-    width: 100%;
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr min-content;
-    // display: flex;
-    overflow: hidden;
+  .track-info {
+    color: hsl(0, 0%, 85%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 350px;
+    height: var(--trackInfoHeight);
+    border-radius: 10px;
+    background-color: hsl(0, 0%, 6%);
+    background-image: linear-gradient(
+      315deg,
+      hsl(220, 13%, 18%) 0%,
+      hsl(120, 41%, 32%) 25%,
+      hsl(120, 43%, 56%) 50%,
+      hsl(120, 41%, 32%) 75%,
+      hsl(220, 13%, 18%) 100%
+    );
+    margin: auto;
 
-    .track-info {
-      display: flex;
-      flex-direction: column;
-      width: 350px;
-      height: var(--trackInfoHeight);
-      border-radius: 10px;
-      background-color: hsl(0, 0%, 6%);
-      background-image: linear-gradient(
-        315deg,
-        #282c34 5%,
-        green 50%,
-        #282c34 100%
-      );
-      margin: auto;
+    box-shadow: 0 0 30px 30px hsl(210, 7%, 5%), 0 0 60px 60px hsl(217, 14%, 18%),
+      0 0 100px 90px hsl(218, 29%, 16%);
 
-      box-shadow: 0 0 30px 30px hsl(210, 7%, 5%),
-        0 0 60px 60px hsl(217, 14%, 18%), 0 0 100px 90px hsl(218, 29%, 16%);
+    h4 {
+      text-align: center;
+      font-size: 1.1em;
+    }
 
-      img {
-        display: block;
-        width: 23em;
-        height: 23em;
+    div.track-artwork-wrapper {
+      position: relative;
+      width: 23em;
+      height: 23em;
+      // margin: auto;
+
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
-        margin: auto;
-        object-fit: cover;
+        box-shadow: 6px 6px 10px 10px hsla(120, 43%, 56%, 0.7),
+          -6px -6px 10px 10px hsla(120, 41%, 32%, 0.7);
+        // 0 0 25px 25px hsla(217, 14%, 18%, 0.1);
+        // background-color: hsla(120, 43%, 56%, 1);
       }
 
-      h2 {
-        color: hsl(0, 0%, 85%);
-        margin: auto;
-        text-align: center;
+      img {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+    .artist-and-track-name {
+      display: flex;
+      flex-direction: column;
+      h1 {
         font-size: 3em;
       }
 
-      .elapsed-time-wrapper {
-        color: hsl(0, 0%, 85%);
-        font-size: 1.7em;
-        max-width: 90%;
-        margin: auto;
+      h2 {
+        color: hsl(0, 0%, 75%);
+        margin-top: 0.3em;
         text-align: center;
+        font-size: 2em;
+        justify-self: flex-end;
+      }
+    }
+
+    .elapsed-time-wrapper {
+      font-size: 1.7em;
+      max-width: 90%;
+      // margin: auto;
+      text-align: center;
+    }
+
+    h3 {
+      span {
+        color: hsl(0, 0%, 70%);
       }
     }
   }

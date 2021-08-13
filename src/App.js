@@ -29,7 +29,7 @@ import SlowMotionCover from './media/slowmotion.jpg';
 
 const SONGS = [
   {
-    name: 'Castr6 - Untold Stories',
+    name: 'Untold Stories',
     songUrl: UntoldStories,
     imgUrl: UntoldStoriesCover,
   },
@@ -128,14 +128,22 @@ function App() {
     <div className="App">
       <div className="visualiser-wrapper">
         <ArtworkDisplay
-          // handleTracklistVisibility={handleTracklistVisibility}
           trackName={SONGS[trackIndex].name}
+          trackArtist={trackIndex === 0 ? 'Castr6' : 'Bensound'}
           imgUrl={SONGS[trackIndex].imgUrl}
-          // trackTimeElapsed={trackProgress}
-          // trackLoaded={trackLoaded}
+          nextTrackName={
+            trackIndex + 1 > SONGS.length - 1
+              ? SONGS[0].name
+              : SONGS[trackIndex + 1].name
+          }
+          nextTrackArtist={
+            trackIndex + 1 === 0 || trackIndex + 1 > SONGS.length - 1
+              ? 'Castr6'
+              : 'Bensound'
+          }
           trackDurationComponent={trackTimeElapsedComponent}
         />
-        {/* {tracksVisible && <TrackListView SONGS={SONGS} visible={tracksVisible} />} */}
+
         <TrackListView
           SONGS={SONGS}
           trackIndex={trackIndex}

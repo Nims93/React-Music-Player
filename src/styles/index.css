@@ -4,11 +4,7 @@
   --trackInfoHeight: 55em;
 }
 
-.App {
-  height: 100vh;
-}
-
-.App .visualiser-wrapper {
+.visualiser-wrapper {
   height: calc(100vh - var(--playerHeight));
   width: 100%;
   position: relative;
@@ -20,7 +16,8 @@
   overflow: hidden;
 }
 
-.App .visualiser-wrapper .track-info {
+.visualiser-wrapper .track-info {
+  color: #d9d9d9;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -28,39 +25,86 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   width: 350px;
   height: var(--trackInfoHeight);
   border-radius: 10px;
   background-color: #0f0f0f;
-  background-image: linear-gradient(315deg, #282c34 5%, green 50%, #282c34 100%);
+  background-image: linear-gradient(315deg, #282c34 0%, #307330 25%, #5fbf5f 50%, #307330 75%, #282c34 100%);
   margin: auto;
   -webkit-box-shadow: 0 0 30px 30px #0c0d0e, 0 0 60px 60px #272c34, 0 0 100px 90px #1d2635;
           box-shadow: 0 0 30px 30px #0c0d0e, 0 0 60px 60px #272c34, 0 0 100px 90px #1d2635;
 }
 
-.App .visualiser-wrapper .track-info img {
-  display: block;
-  width: 23em;
-  height: 23em;
-  border-radius: 50%;
-  margin: auto;
-  -o-object-fit: cover;
-     object-fit: cover;
+.visualiser-wrapper .track-info h4 {
+  text-align: center;
+  font-size: 1.1em;
 }
 
-.App .visualiser-wrapper .track-info h2 {
-  color: #d9d9d9;
-  margin: auto;
-  text-align: center;
+.visualiser-wrapper .track-info div.track-artwork-wrapper {
+  position: relative;
+  width: 23em;
+  height: 23em;
+}
+
+.visualiser-wrapper .track-info div.track-artwork-wrapper:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  -webkit-box-shadow: 6px 6px 10px 10px rgba(95, 191, 95, 0.7), -6px -6px 10px 10px rgba(48, 115, 48, 0.7);
+          box-shadow: 6px 6px 10px 10px rgba(95, 191, 95, 0.7), -6px -6px 10px 10px rgba(48, 115, 48, 0.7);
+}
+
+.visualiser-wrapper .track-info div.track-artwork-wrapper img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+
+.visualiser-wrapper .track-info .artist-and-track-name {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.visualiser-wrapper .track-info .artist-and-track-name h1 {
   font-size: 3em;
 }
 
-.App .visualiser-wrapper .track-info .elapsed-time-wrapper {
-  color: #d9d9d9;
+.visualiser-wrapper .track-info .artist-and-track-name h2 {
+  color: #bfbfbf;
+  margin-top: 0.3em;
+  text-align: center;
+  font-size: 2em;
+  justify-self: flex-end;
+}
+
+.visualiser-wrapper .track-info .elapsed-time-wrapper {
   font-size: 1.7em;
   max-width: 90%;
-  margin: auto;
   text-align: center;
+}
+
+.visualiser-wrapper .track-info h3 span {
+  color: #b3b3b3;
 }
 
 :root {
@@ -228,43 +272,29 @@
 .seek-bar-wrapper {
   height: 5px;
   width: 100%;
-  padding: 7px 0;
+  padding: 11px 0;
   position: absolute;
   top: -12%;
   cursor: pointer;
+  z-index: 5;
 }
 
 .seek-bar-wrapper .seek-bar {
   position: absolute;
-  top: 45%;
-  width: 0%;
+  top: 30%;
+  width: 100%;
   height: 15%;
   background-color: green;
-  -webkit-transition: all 0.1s linear;
-  transition: all 0.1s linear;
-}
-
-.seek-bar-wrapper .seek-bar .seek-bar-knob {
-  width: 0px;
-  height: 0px;
-  border-radius: 50%;
-  background-color: green;
-  position: absolute;
-  right: -6px;
-  top: -3px;
-  opacity: 0;
-  -webkit-transition: height width opacity 0.1s linear;
-  transition: height width opacity 0.1s linear;
-  -webkit-transition-delay: 0.1s;
-          transition-delay: 0.1s;
+  -webkit-transition: height transform 0.1s linear;
+  transition: height transform 0.1s linear;
 }
 
 .seek-bar-wrapper:hover .seek-bar {
   height: 40%;
   -webkit-transform: translateY(-2px);
           transform: translateY(-2px);
-  -webkit-transition: height transform 0.1s linear;
-  transition: height transform 0.1s linear;
+  -webkit-transition: all 0.1s linear;
+  transition: all 0.1s linear;
 }
 
 .seek-bar-wrapper:hover .seek-bar .seek-bar-knob {
@@ -546,6 +576,7 @@ body {
 }
 
 .App {
+  height: 100vh;
   position: relative;
 }
 
