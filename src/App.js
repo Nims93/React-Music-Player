@@ -113,20 +113,9 @@ function App() {
     setTrackIndex(idx);
   }
 
-  // function handleTrackProgress(progressAndDurationArray, trackLoadedBool) {
-  //   setTrackProgress(progressAndDurationArray);
-  //   setTrackLoaded(trackLoadedBool);
-  // }
-
   function handleTrackProgress2(AudioDislayComponent) {
     setTrackTimeElapsedComponent(AudioDislayComponent);
   }
-
-  // function isMouseDownOnSeekBar(isMouseDown) {
-  //   return isMouseDown
-  // }
-
-  // function seekBarScrub
 
   return (
     <div
@@ -164,7 +153,6 @@ function App() {
         handleNext={handleNext}
         track={SONGS[trackIndex].songUrl}
         handleTrackProgressForTrackInfoDisplay={handleTrackProgress2}
-        // isMouseDownOnSeekBar={isMouseDownOnSeekBar}
       />
     </div>
   );

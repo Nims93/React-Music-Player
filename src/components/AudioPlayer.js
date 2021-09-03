@@ -31,7 +31,6 @@ export default function AudioPlayer(props) {
     handlePrev,
     track,
     handleTrackProgressForTrackInfoDisplay,
-    isMouseDownOnSeekBar,
   } = props;
 
   const [trackLoaded, setTrackLoaded] = useState(false);
@@ -185,7 +184,6 @@ export default function AudioPlayer(props) {
         totalDuration={trackLoaded ? audioRef.current.duration : 0}
         seekBarScrub={seekBarScrub}
         audioRef={audioRef}
-        isMouseDownOnSeekBar={isMouseDownOnSeekBar}
       />
 
       <div className="control-buttons">
