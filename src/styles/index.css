@@ -299,7 +299,7 @@
   transition: height transform 0.1s linear;
 }
 
-.seek-bar-wrapper:hover .seek-bar {
+s .seek-bar-wrapper:hover .seek-bar {
   height: 40%;
   -webkit-transform: translateY(-2px);
           transform: translateY(-2px);
@@ -309,10 +309,18 @@
   transition: width 0.05s linear;
 }
 
-.seek-bar-wrapper:hover .seek-bar .seek-bar-knob {
+s .seek-bar-wrapper:hover .seek-bar .seek-bar-knob {
   width: 13px;
   height: 13px;
   opacity: 1;
+}
+
+.seek-bar-wrapper .seek-bar.currently-seeking {
+  height: 40%;
+  -webkit-transform: translateY(-2px);
+          transform: translateY(-2px);
+  -webkit-transition: width 0.05s linear;
+  transition: width 0.05s linear;
 }
 
 .control-buttons {
