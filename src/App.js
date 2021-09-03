@@ -122,10 +122,18 @@ function App() {
     setTrackTimeElapsedComponent(AudioDislayComponent);
   }
 
-  // function
+  // function isMouseDownOnSeekBar(isMouseDown) {
+  //   return isMouseDown
+  // }
+
+  // function seekBarScrub
 
   return (
-    <div className="App">
+    <div
+      className="App"
+      // onMouseMove={}
+      // onMouseUp={}
+    >
       <div className="visualiser-wrapper">
         <ArtworkDisplay
           trackName={SONGS[trackIndex].name}
@@ -156,6 +164,7 @@ function App() {
         handleNext={handleNext}
         track={SONGS[trackIndex].songUrl}
         handleTrackProgressForTrackInfoDisplay={handleTrackProgress2}
+        // isMouseDownOnSeekBar={isMouseDownOnSeekBar}
       />
     </div>
   );

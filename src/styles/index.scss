@@ -1,7 +1,6 @@
 @import './bodyStyles';
 @import './trackListStyles';
 @import './playerStyles';
-@import './variables';
 
 *,
 :before,
@@ -13,6 +12,9 @@
 
 :root {
   font-size: 10px;
+  --playerHeight: 70px;
+  --color: hsl(0, 0%, 18.82%);
+  --trackInfoHeight: 55em;
 }
 
 body {

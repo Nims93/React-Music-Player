@@ -1,5 +1,3 @@
-@import './variables';
-
 //side menu slide effect styles
 // .track-list {
 //   position: fixed;
@@ -24,7 +22,7 @@
       transform: rotate(180deg) scale(1.1);
       fill: #ffffff;
       filter: blur(0.5px);
-      transition: all 0.1s linear;
+      // transition: all 0.1s linear;
     }
   }
 
@@ -40,12 +38,12 @@
       fill: #ffffff;
       filter: blur(0.5px);
       transform: scale(1.1);
-      transition: all 0.1s linear;
+      transition: all 0.3s linear;
     }
 
     svg {
       fill: hsl(0, 0%, 80%);
-      transition: all 0.1s linear;
+      transition: all 0.3s linear;
     }
   }
 

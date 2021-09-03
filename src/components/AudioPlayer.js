@@ -25,15 +25,15 @@ function convertToMinsAndSecs(time) {
   return `${minutes}:${secondsValue}`;
 }
 
-let previousVolume = 100;
-
 export default function AudioPlayer(props) {
   const {
     handleNext,
     handlePrev,
     track,
     handleTrackProgressForTrackInfoDisplay,
+    isMouseDownOnSeekBar,
   } = props;
+
   const [trackLoaded, setTrackLoaded] = useState(false);
   const [trackProgress, setTrackProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -74,7 +74,7 @@ export default function AudioPlayer(props) {
         nextSong();
       }
     });
-  }, [track]);
+  }, [track, repeatSong]);
 
   //creates timeout callback for tracking current elapsed track time.
   //called whenever that track plays and when elapsed track time changes
@@ -127,18 +127,10 @@ export default function AudioPlayer(props) {
   }
 
   function seekBarScrub(mouseDownCoord, seekBarWidth) {
-    //bug isn't here
-    //when green seek bar is clicked, it's total length is passed
-    //to this fucntinon creating the erroneous seek bar movement
-    //e.currentTarget.offsetWidth not working
-    console.log(mouseDownCoord, seekBarWidth);
-
     const percentage = ((mouseDownCoord / seekBarWidth) * 100) / 100;
     const newNum = percentage * Math.round(audioRef.current.duration);
-    // console.log(mouseDownCoord, seekBarWidth, `${percentage}%`);
 
     clearTimeout(timeoutRef);
-
     setTrackProgress(newNum);
     audioRef.current.currentTime = newNum;
   }
@@ -192,13 +184,15 @@ export default function AudioPlayer(props) {
         trackProgress={trackProgress}
         totalDuration={trackLoaded ? audioRef.current.duration : 0}
         seekBarScrub={seekBarScrub}
+        audioRef={audioRef}
+        isMouseDownOnSeekBar={isMouseDownOnSeekBar}
       />
 
       <div className="control-buttons">
         <MediaButton
           className={repeatSong ? 'repeat active' : 'repeat'}
           icon={<RepeatIcon />}
-          onClick={() => setRepeatSong(!repeatSong)}
+          onClick={() => setRepeatSong((repeatSong) => !repeatSong)}
         />
 
         <div className="playpause-seek-buttons">
