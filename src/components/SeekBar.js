@@ -1,7 +1,5 @@
 import React, { useState, useRef } from 'react';
 
-let value = false;
-
 export default function SeekBar(props) {
   const { trackProgress, totalDuration, seekBarScrub, audioRef } = props;
 
@@ -17,7 +15,6 @@ export default function SeekBar(props) {
       onMouseDown={(e) => {
         if (e.buttons === 1) {
           e.preventDefault();
-          value = true;
           setMouseDown(true);
           setMouseMoveCaptureDelay(true);
           seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
