@@ -87,8 +87,6 @@ const SONGS = [
 
 function App() {
   const [trackIndex, setTrackIndex] = useState(0);
-  // const [trackProgress, setTrackProgress] = useState([0, 0]);
-  // const [trackLoaded, setTrackLoaded] = useState(false);
   const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] =
     useState(null);
 
@@ -101,7 +99,6 @@ function App() {
   }
 
   function handleNext() {
-    // console.log(SONGS);
     if (trackIndex + 1 > SONGS.length - 1) {
       setTrackIndex(0);
     } else {
@@ -113,27 +110,12 @@ function App() {
     setTrackIndex(idx);
   }
 
-  // function handleTrackProgress(progressAndDurationArray, trackLoadedBool) {
-  //   setTrackProgress(progressAndDurationArray);
-  //   setTrackLoaded(trackLoadedBool);
-  // }
-
   function handleTrackProgress2(AudioDislayComponent) {
     setTrackTimeElapsedComponent(AudioDislayComponent);
   }
 
-  // function isMouseDownOnSeekBar(isMouseDown) {
-  //   return isMouseDown
-  // }
-
-  // function seekBarScrub
-
   return (
-    <div
-      className="App"
-      // onMouseMove={}
-      // onMouseUp={}
-    >
+    <div className="App">
       <div className="visualiser-wrapper">
         <ArtworkDisplay
           trackName={SONGS[trackIndex].name}
@@ -164,7 +146,6 @@ function App() {
         handleNext={handleNext}
         track={SONGS[trackIndex].songUrl}
         handleTrackProgressForTrackInfoDisplay={handleTrackProgress2}
-        // isMouseDownOnSeekBar={isMouseDownOnSeekBar}
       />
     </div>
   );

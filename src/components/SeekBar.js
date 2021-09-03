@@ -1,44 +1,38 @@
-import React, { useState, useRef, useEffect } from 'react';
-let value = false;
+import React, { useRef, useEffect } from 'react';
+
+let isMouseDown = false;
+let mouseMoveDelay = false;
+
 export default function SeekBar(props) {
-  const {
-    trackProgress,
-    totalDuration,
-    seekBarScrub,
-    audioRef,
-    isMouseDownOnSeekBar,
-  } = props;
-
-  const [isMouseDown, setMouseDown] = useState(false);
-  const [mouseMoveCaptureDelay, setMouseMoveCaptureDelay] = useState(false);
+  const { trackProgress, totalDuration, seekBarScrub, audioRef } = props;
   const seekBarRef = useRef(null);
-  const unsetMouseDownTimeoutRef = useRef(null);
 
-  // useEffect(() => {
-  //   document.body.addEventListener('mouseup', (e) => {
-  //     e.preventDefault();
-  //     console.log('mouse up');
-  //     if (isMouseDown) {
-  //       setMouseDown(false);
-  //       setMouseMoveCaptureDelay(false);
-  //       seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
-  //       audioRef.current.muted = false;
-  //     }
-  //   });
+  useEffect(() => {
+    document.body.addEventListener('mouseup', handleMouseUp);
+    document.body.addEventListener('mousemove', handleMouseMove);
+  });
 
-  //   document.body.addEventListener('mousemove', (e) => {
-  //     e.preventDefault();
-  //     if (isMouseDown && mouseMoveCaptureDelay) {
-  //       audioRef.current.muted = true;
-  //       setTimeout(() => {
-  //         console.log('moving');
-  //         setMouseMoveCaptureDelay(true);
-  //         seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
-  //       }, 2000);
-  //       setMouseMoveCaptureDelay(false);
-  //     }
-  //   });
-  // }, [mouseMoveCaptureDelay, isMouseDown]);
+  const handleMouseUp = (e) => {
+    e.preventDefault();
+    if (isMouseDown) {
+      isMouseDown = false;
+      mouseMoveDelay = false;
+      seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
+      audioRef.current.muted = false;
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    e.preventDefault();
+    if (isMouseDown && mouseMoveDelay) {
+      audioRef.current.muted = true;
+      setTimeout(() => {
+        mouseMoveDelay = true;
+        seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
+      }, 70);
+      mouseMoveDelay = false;
+    }
+  };
 
   return (
     <div
@@ -47,38 +41,39 @@ export default function SeekBar(props) {
       onMouseDown={(e) => {
         if (e.buttons === 1) {
           e.preventDefault();
-          value = true;
-          setMouseDown(true);
-          setMouseMoveCaptureDelay(true);
+          isMouseDown = true;
+          mouseMoveDelay = true;
+          console.log(isMouseDown, mouseMoveDelay);
+
           seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
         }
       }}
-      onMouseMove={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (isMouseDown && mouseMoveCaptureDelay) {
-          audioRef.current.muted = true;
-          setTimeout(() => {
-            setMouseMoveCaptureDelay(true);
-            seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
-            clearTimeout(unsetMouseDownTimeoutRef.current);
-          }, 50);
-          unsetMouseDownTimeoutRef.current = setTimeout(() => {
-            setMouseDown(false);
-            audioRef.current.muted = false;
-          }, 2000);
-          //will be set true after 50ms
-          setMouseMoveCaptureDelay(false);
-        }
-      }}
-      onMouseUp={(e) => {
-        console.log('mouseup');
-        e.preventDefault();
-        setMouseDown(false);
-        setMouseMoveCaptureDelay(false);
-        seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
-        audioRef.current.muted = false;
-      }}
+      // onMouseMove={(e) => {
+      //   e.preventDefault();
+      //   e.stopPropagation();
+      //   if (isMouseDown && mouseMoveCaptureDelay) {
+      //     audioRef.current.muted = true;
+      //     setTimeout(() => {
+      //       setMouseMoveCaptureDelay(true);
+      //       seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
+      //       clearTimeout(unsetMouseDownTimeoutRef.current);
+      //     }, 50);
+      //     unsetMouseDownTimeoutRef.current = setTimeout(() => {
+      //       setMouseDown(false);
+      //       audioRef.current.muted = false;
+      //     }, 2000);
+      //     //will be set true after 50ms
+      //     setMouseMoveCaptureDelay(false);
+      //   }
+      // }}
+      // onMouseUp={(e) => {
+      //   console.log('mouseup');
+      //   e.preventDefault();
+      //   setMouseDown(false);
+      //   setMouseMoveCaptureDelay(false);
+      //   seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
+      //   audioRef.current.muted = false;
+      // }}
     >
       <div
         className="seek-bar"
