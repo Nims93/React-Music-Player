@@ -22,7 +22,6 @@
       transform: rotate(180deg) scale(1.1);
       fill: #ffffff;
       filter: blur(0.5px);
-      // transition: all 0.1s linear;
     }
   }
 
@@ -62,7 +61,6 @@
     margin-right: 0;
     opacity: 0;
     transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-    // scrollbar-color: ;
   }
 
   ul.songs-list {
@@ -71,7 +69,7 @@
     visibility: visible;
     list-style-type: none;
     overflow-y: scroll;
-    // padding-right: 1em;
+    border-left: 0.1em hsl(0, 0%, 35%) solid;
     border-radius: 10px;
     box-shadow: 0 0 10px 10px hsla(210, 7%, 5%, 0.4),
       0 0 20px 20px hsla(217, 14%, 18%, 0.5),
@@ -108,11 +106,24 @@
         margin: 0.2em 1em;
       }
 
-      .song-name {
+      .song-info {
         width: 100%;
-        font-size: 1.7em;
-        overflow-x: hidden;
-        overflow-y: hidden;
+        margin-left: 1.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .song-name {
+          font-size: 1.7em;
+        }
+
+        .artist-name {
+          font-size: 1.4em;
+          font-weight: lighter;
+          color: hsl(0, 0%, 77%);
+        }
       }
 
       &:hover .icon svg {

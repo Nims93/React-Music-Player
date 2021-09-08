@@ -12,12 +12,12 @@ export default function TrackListView(props) {
     setToggleList(!toggleListVisibility);
   }
 
-  function createList(songs, currentlyPlayingSongIndex) {
-    const songsList = songs.map((songObj, index) => {
+  function createSongsList() {
+    const songsList = SONGS.map((songObj, index) => {
       return (
         <li
           style={
-            index === currentlyPlayingSongIndex
+            index === trackIndex
               ? {
                   backgroundColor: 'hsla(0, 0%, 100%, .2)',
                   borderRadius: '5px',
@@ -26,10 +26,13 @@ export default function TrackListView(props) {
           }
           id={`song-list-item-${index}`}
           key={index}
-          onClickCapture={handleClick}
+          onClick={handleClick}
         >
           <img src={songObj.imgUrl} alt={`track artwork for ${songObj.name}`} />
-          <div className="song-name">{songObj.name}</div>
+          <div className="song-info">
+            <div className="song-name">{songObj.name}</div>
+            <div className="artist-name">{songObj.artist}</div>
+          </div>
           <div className="icon">
             <VolumeIcon />
           </div>
@@ -49,11 +52,8 @@ export default function TrackListView(props) {
   return (
     <div className="track-list">
       <SongListToggle handleTracklistVisibility={handleToggle} />
-      <ul
-        // style={toggleListVisibility ? { display: 'none' } : null}
-        className={toggleListVisibility ? 'songs-list' : 'songs-list hidden'}
-      >
-        {createList(SONGS, trackIndex)}
+      <ul className={toggleListVisibility ? 'songs-list' : 'songs-list hidden'}>
+        {createSongsList()}
       </ul>
     </div>
   );

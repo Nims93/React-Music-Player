@@ -169,6 +169,7 @@
   visibility: visible;
   list-style-type: none;
   overflow-y: scroll;
+  border-left: 0.1em #595959 solid;
   border-radius: 10px;
   -webkit-box-shadow: 0 0 10px 10px rgba(12, 13, 14, 0.4), 0 0 20px 20px rgba(39, 44, 52, 0.5), 0 0 40px 40px rgba(29, 38, 53, 0.5);
           box-shadow: 0 0 10px 10px rgba(12, 13, 14, 0.4), 0 0 20px 20px rgba(39, 44, 52, 0.5), 0 0 40px 40px rgba(29, 38, 53, 0.5);
@@ -212,11 +213,31 @@
   margin: 0.2em 1em;
 }
 
-.track-list ul.songs-list li .song-name {
+.track-list ul.songs-list li .song-info {
   width: 100%;
+  margin-left: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+
+.track-list ul.songs-list li .song-info .song-name {
   font-size: 1.7em;
-  overflow-x: hidden;
-  overflow-y: hidden;
+}
+
+.track-list ul.songs-list li .song-info .artist-name {
+  font-size: 1.4em;
+  font-weight: lighter;
+  color: #c4c4c4;
 }
 
 .track-list ul.songs-list li:hover .icon svg {
