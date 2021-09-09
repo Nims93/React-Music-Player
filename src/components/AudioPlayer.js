@@ -14,6 +14,8 @@ import { ReactComponent as RepeatIcon } from './../assets/arrow-repeat.svg';
 import { ReactComponent as VolumeIcon } from './../assets/volume-icon.svg';
 import { ReactComponent as VolumeMuteIcon } from './../assets/volume-mute-icon.svg';
 
+function canPlay() {}
+
 function convertToMinsAndSecs(time) {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time - minutes * 60);
@@ -53,27 +55,23 @@ export default function AudioPlayer(props) {
     />
   );
 
-  //create audio object. called when track prop changes
   useEffect(() => {
     audioRef.current.pause();
     audioRef.current = new Audio(track);
     audioRef.current.addEventListener('canplay', () => {
       setTrackLoaded(true);
-      if (isPlaying) {
-        audioRef.current.play();
-      }
+      isPlaying && audioRef.current.play();
     });
+  }, [track]);
 
-    audioRef.current.addEventListener('ended', () => {
-      if (repeatSong) {
-        audioRef.current.currentTime = 0;
-        setTrackProgress(0);
-        audioRef.current.play();
-      } else {
-        nextSong();
-      }
-    });
-  }, [track, repeatSong]);
+  useEffect(() => {
+    if (audioRef.current.ended && repeatSong) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else if (audioRef.current.ended && !repeatSong) {
+      nextSong();
+    }
+  }, [trackProgress, repeatSong]);
 
   //creates timeout callback for tracking current elapsed track time.
   //called whenever that track plays and when elapsed track time changes
@@ -139,9 +137,6 @@ export default function AudioPlayer(props) {
       setTrackProgress(0);
       audioRef.current.currentTime = 0;
     } else {
-      // audioRef.current.pause();
-      // setIsPlaying(false);
-      // audioRef.current.currentTime = 0;
       setTrackProgress(0);
       setTrackLoaded(false);
       clearTimeout(timeoutRef);
@@ -150,10 +145,6 @@ export default function AudioPlayer(props) {
   }
 
   function nextSong() {
-    // if repeat button? set currentTime and track Progress to 0
-    // else call handleNext prop
-    // audioRef.current.pause();
-    // setIsPlaying(false);
     setTrackProgress(0);
     clearTimeout(timeoutRef);
     setTrackLoaded(false);
