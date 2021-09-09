@@ -1,4 +1,4 @@
-@import './bodyStyles';
+@import './trackInfoStyles';
 @import './trackListStyles';
 @import './playerStyles';
 
@@ -28,6 +28,15 @@ body {
   // width: 100vw;
   height: 100vh;
   position: relative;
+  .visualiser-wrapper {
+    height: calc(100vh - var(--playerHeight));
+    width: 100%;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    // display: flex;
+    overflow: hidden;
+  }
 }
 
 button {
