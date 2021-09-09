@@ -14,8 +14,6 @@ import { ReactComponent as RepeatIcon } from './../assets/arrow-repeat.svg';
 import { ReactComponent as VolumeIcon } from './../assets/volume-icon.svg';
 import { ReactComponent as VolumeMuteIcon } from './../assets/volume-mute-icon.svg';
 
-function canPlay() {}
-
 function convertToMinsAndSecs(time) {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time - minutes * 60);
@@ -23,9 +21,19 @@ function convertToMinsAndSecs(time) {
   let secondsValue;
   secondsValue =
     seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
-
   return `${minutes}:${secondsValue}`;
 }
+const handleCanPlay = (
+  audioRef,
+  setTrackLoaded,
+  isPlaying,
+  setTrackProgress
+) => {
+  console.log('can play called');
+  setTrackLoaded(true);
+  // setTrackProgress(0);
+  isPlaying && audioRef.current.play();
+};
 
 export default function AudioPlayer(props) {
   const {
@@ -46,7 +54,7 @@ export default function AudioPlayer(props) {
   const trackTimeElapsedComponent = (
     <AudioTimeDisplay
       className="elapsed-time-wrapper"
-      currentDuration={
+      currentTimeElapsed={
         trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`
       }
       songLength={
@@ -55,17 +63,26 @@ export default function AudioPlayer(props) {
     />
   );
 
+  //handle track switching
   useEffect(() => {
     audioRef.current.pause();
     audioRef.current = new Audio(track);
-    audioRef.current.addEventListener('canplay', () => {
-      setTrackLoaded(true);
-      isPlaying && audioRef.current.play();
-    });
+    audioRef.current.addEventListener(
+      'canplay',
+      handleCanPlay.bind(
+        null,
+        audioRef,
+        setTrackLoaded,
+        isPlaying,
+        setTrackProgress
+      )
+    );
+    return audioRef.current.removeEventListener('canplay', handleCanPlay);
   }, [track]);
 
   useEffect(() => {
     if (audioRef.current.ended && repeatSong) {
+      setTrackProgress(0);
       audioRef.current.currentTime = 0;
       audioRef.current.play();
     } else if (audioRef.current.ended && !repeatSong) {

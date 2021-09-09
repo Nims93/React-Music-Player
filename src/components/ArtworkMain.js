@@ -1,8 +1,6 @@
 import React from 'react';
-import AudioTimeDisplay from './AudioTimeDisplay';
 
 export default function ArtworkDisplay(props) {
-  // const { trackName, imgUrl, trackTimeElapsed, trackLoaded } = props;
   const {
     trackName,
     trackArtist,

@@ -72,32 +72,3 @@ export default function SeekBar(props) {
     </div>
   );
 }
-//redundant code that doesn't allow seeking outside of "seek-bar-wrapper"
-//container div
-//
-// onMouseMove={(e) => {
-//   e.preventDefault();
-//   e.stopPropagation();
-//   if (isMouseDown && mouseMoveCaptureDelay) {
-//     audioRef.current.muted = true;
-//     setTimeout(() => {
-//       setMouseMoveCaptureDelay(true);
-//       seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
-//       clearTimeout(unsetMouseDownTimeoutRef.current);
-//     }, 50);
-//     unsetMouseDownTimeoutRef.current = setTimeout(() => {
-//       setMouseDown(false);
-//       audioRef.current.muted = false;
-//     }, 2000);
-//     //will be set true after 50ms
-//     setMouseMoveCaptureDelay(false);
-//   }
-// }}
-// onMouseUp={(e) => {
-//   console.log('mouseup');
-//   e.preventDefault();
-//   setMouseDown(false);
-//   setMouseMoveCaptureDelay(false);
-//   seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
-//   audioRef.current.muted = false;
-// }}
