@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import AudioPlayer from './components/AudioPlayer';
 import ArtworkDisplay from './components/ArtworkMain';
 import TrackListView from './components/TrackListView';
@@ -7,6 +7,7 @@ function App({ SONGS }) {
   const [trackIndex, setTrackIndex] = useState(0);
   const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] =
     useState(null);
+  const audioPlayerRef = useRef(null);
 
   const nextTrackName =
     trackIndex + 1 > SONGS.length - 1
@@ -33,6 +34,9 @@ function App({ SONGS }) {
   }
 
   function handleTrackSelect(idx) {
+    //reset time elasped component to 0
+    audioPlayerRef.current.unloadTrack();
+    audioPlayerRef.current.resetTrackProgress();
     setTrackIndex(idx);
   }
 
@@ -64,6 +68,7 @@ function App({ SONGS }) {
         handleNext={handleNext}
         track={SONGS[trackIndex].songUrl}
         handleTrackProgressForTrackInfoDisplay={handleTrackProgress}
+        ref={audioPlayerRef}
       />
     </div>
   );

@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import SeekBar from './SeekBar';
 import MediaButton from './MediaButton';
 import AudioTimeDisplay from './AudioTimeDisplay';
@@ -23,19 +29,12 @@ function convertToMinsAndSecs(time) {
     seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
   return `${minutes}:${secondsValue}`;
 }
-const handleCanPlay = (
-  audioRef,
-  setTrackLoaded,
-  isPlaying,
-  setTrackProgress
-) => {
-  console.log('can play called');
+const handleCanPlay = (audioRef, setTrackLoaded, isPlaying) => {
   setTrackLoaded(true);
-  // setTrackProgress(0);
   isPlaying && audioRef.current.play();
 };
 
-export default function AudioPlayer(props) {
+function AudioPlayer(props, ref) {
   const {
     handleNext,
     handlePrev,
@@ -48,8 +47,16 @@ export default function AudioPlayer(props) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [repeatSong, setRepeatSong] = useState(false);
   const [toggleVolumeIcon, setToggleVolume] = useState(true);
-  const audioRef = useRef(new Audio());
+  const audioRef = useRef(new Audio(track));
   const timeoutRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    //resets trackElapsedTimeComponent when a track is selected from track selector
+    unloadTrack: () => setTrackLoaded(false),
+    //resets track elasped time display when track is selcted from track selector
+    resetTrackProgress: () => setTrackProgress(0),
+    returnTrackTimeElapsedComponent: () => trackTimeElapsedComponent,
+  }));
 
   const trackTimeElapsedComponent = (
     <AudioTimeDisplay
@@ -69,15 +76,12 @@ export default function AudioPlayer(props) {
     audioRef.current = new Audio(track);
     audioRef.current.addEventListener(
       'canplay',
-      handleCanPlay.bind(
-        null,
-        audioRef,
-        setTrackLoaded,
-        isPlaying,
-        setTrackProgress
-      )
+      handleCanPlay.bind(null, audioRef, setTrackLoaded, isPlaying)
     );
-    return audioRef.current.removeEventListener('canplay', handleCanPlay);
+    return () => {
+      audioRef.current.pause();
+      audioRef.current.removeEventListener('canplay', handleCanPlay);
+    };
   }, [track]);
 
   useEffect(() => {
@@ -244,3 +248,5 @@ export default function AudioPlayer(props) {
     </div>
   );
 }
+
+export default AudioPlayer = forwardRef(AudioPlayer);
