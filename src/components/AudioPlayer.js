@@ -78,10 +78,10 @@ function AudioPlayer(props, ref) {
       'canplay',
       handleCanPlay.bind(null, audioRef, setTrackLoaded, isPlaying)
     );
-    return () => {
-      audioRef.current.pause();
-      audioRef.current.removeEventListener('canplay', handleCanPlay);
-    };
+    // return () => {
+    //   audioRef.current.pause();
+    //   audioRef.current.removeEventListener('canplay', handleCanPlay);
+    // };
   }, [track]);
 
   useEffect(() => {
@@ -99,11 +99,12 @@ function AudioPlayer(props, ref) {
   useEffect(() => {
     if (isPlaying) {
       timeoutRef.current = setTimeout(() => {
+        console.log('going')
         const audioTime = audioRef.current.currentTime;
         setTrackProgress(audioTime);
       }, 500);
     }
-  }, [isPlaying, trackProgress]);
+  }, [isPlaying, trackProgress, trackLoaded]);
 
   //sends <AudioTimeDisplay /> up to App component to be sent back down to
   //artwork display component
