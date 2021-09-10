@@ -29,11 +29,6 @@ function convertToMinsAndSecs(time) {
     seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
   return `${minutes}:${secondsValue}`;
 }
-const handleCanPlay = (audioRef, setTrackLoaded, isPlaying) => {
-  setTrackLoaded(true);
-  console.log(isPlaying);
-  isPlaying && audioRef.current.play();
-};
 
 function AudioPlayer(props, ref) {
   const {
@@ -70,19 +65,26 @@ function AudioPlayer(props, ref) {
       }
     />
   );
-  // console.log(isPlaying);
+
   //handle track switching
   useEffect(() => {
     audioRef.current.pause();
     audioRef.current.src = track;
-    audioRef.current.addEventListener(
-      'canplay',
-      handleCanPlay.bind(null, audioRef, setTrackLoaded, isPlaying)
-    );
-    return () => {
-      audioRef.current.pause();
-      audioRef.current.removeEventListener('canplay', handleCanPlay);
-    };
+    let playPromise = audioRef.current.play();
+    if (playPromise) {
+      playPromise
+        .then((_) => setTrackLoaded(true))
+        .then((_) => !isPlaying && audioRef.current.pause())
+        .catch((error) => audioRef.current.pause());
+    }
+    // audioRef.current.addEventListener('canplay', () => {
+    //   setTrackLoaded(true);
+    //   if (isPlaying) audioRef.current.play();
+    // });
+    // return () => {
+    //   audioRef.current.pause();
+    //   audioRef.current.removeEventListener('canplay', handleCanPlay);
+    // };
   }, [track]);
 
   useEffect(() => {
@@ -145,11 +147,11 @@ function AudioPlayer(props, ref) {
     }
   }
 
-  function seekBarScrub(mouseDownCoord, seekBarWidth) {
-    const percentage = ((mouseDownCoord / seekBarWidth) * 100) / 100;
+  function seekBarScrub(mouseDownXCoord, seekBarWidth) {
+    const percentage = ((mouseDownXCoord / seekBarWidth) * 100) / 100;
     const newNum = percentage * Math.round(audioRef.current.duration);
 
-    clearTimeout(timeoutRef);
+    clearTimeout(timeoutRef.current);
     setTrackProgress(newNum);
     audioRef.current.currentTime = newNum;
   }
