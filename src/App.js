@@ -35,9 +35,9 @@ function App({ SONGS }) {
 
   function handleTrackSelect(idx) {
     //reset time elasped component to 0
-    audioPlayerRef.current.unloadTrack();
+    if (idx !== trackIndex) {audioPlayerRef.current.unloadTrack();
     audioPlayerRef.current.resetTrackProgress();
-    setTrackIndex(idx);
+    setTrackIndex(idx);}
   }
 
   function handleTrackProgress(AudioDislayComponent) {

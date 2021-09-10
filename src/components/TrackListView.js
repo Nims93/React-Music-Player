@@ -45,7 +45,7 @@ export default function TrackListView(props) {
   function handleClick(e) {
     e.stopPropagation();
     const id = e.currentTarget.id;
-    const index = Number(id.slice(id.lastIndexOf('-') + 1));
+    const index = parseInt(id.slice(id.lastIndexOf('-') + 1));
     handleTrackSelect(index);
   }
 
