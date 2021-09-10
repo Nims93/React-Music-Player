@@ -4,6 +4,7 @@ import React, {
   useState,
   forwardRef,
   useImperativeHandle,
+  useReducer,
 } from 'react';
 import SeekBar from './SeekBar';
 import MediaButton from './MediaButton';
@@ -29,10 +30,59 @@ function convertToMinsAndSecs(time) {
     seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
   return `${minutes}:${secondsValue}`;
 }
-const handleCanPlay = (audioRef, setTrackLoaded, isPlaying) => {
-  setTrackLoaded(true);
+
+const handleCanPlay = (dispatch, audioRef, isPlaying) => {
+  dispatch({ type: 'set-track-loaded', payload: true });
+
   isPlaying && audioRef.current.play();
 };
+
+const initialState = {
+  trackLoaded: false,
+  trackProgress: 0,
+  isPlaying: false,
+  repeatSong: false,
+  isMuted: false,
+};
+
+function reducer(state, action) {
+  // console.log(state);
+  switch (action.type) {
+    case 'play-pause':
+      return {
+        ...state,
+        isPlaying: !state.isPlaying,
+      };
+    case 'toggle-repeat':
+      return {
+        ...state,
+        repeatSong: !state.repeatSong,
+      };
+    case 'set-track-loaded':
+      return {
+        ...state,
+        trackLoaded: action.payload,
+      };
+    case 'set-track-progress':
+      return {
+        ...state,
+        trackProgress: action.payload,
+      };
+    case 'prepare-for-next-track':
+      return {
+        ...state,
+        trackLoaded: false,
+        trackProgress: 0,
+      };
+    case 'toggle-mute':
+      return {
+        ...state,
+        isMuted: !state.isMuted,
+      };
+    default:
+      throw new Error('Action not in switch statement ');
+  }
+}
 
 function AudioPlayer(props, ref) {
   const {
@@ -42,19 +92,21 @@ function AudioPlayer(props, ref) {
     handleTrackProgressForTrackInfoDisplay,
   } = props;
 
-  const [trackLoaded, setTrackLoaded] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [repeatSong, setRepeatSong] = useState(false);
+  // const [trackLoaded, setTrackLoaded] = useState(false);
+  // const [trackProgress, setTrackProgress] = useState(0);
+  // const [isPlaying, setIsPlaying] = useState(false);
+  // const [repeatSong, setRepeatSong] = useState(false);
   const [toggleVolumeIcon, setToggleVolume] = useState(true);
   const audioRef = useRef(new Audio(track));
   const timeoutRef = useRef(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted } = state;
 
   useImperativeHandle(ref, () => ({
     //resets trackElapsedTimeComponent when a track is selected from track selector
-    unloadTrack: () => setTrackLoaded(false),
     //resets track elasped time display when track is selcted from track selector
-    resetTrackProgress: () => setTrackProgress(0),
+    prepareForNextTrack: () => dispatch({ type: 'prepare-for-next-track' }),
     returnTrackTimeElapsedComponent: () => trackTimeElapsedComponent,
   }));
 
@@ -76,7 +128,7 @@ function AudioPlayer(props, ref) {
     audioRef.current = new Audio(track);
     audioRef.current.addEventListener(
       'canplay',
-      handleCanPlay.bind(null, audioRef, setTrackLoaded, isPlaying)
+      handleCanPlay.bind(null, dispatch, audioRef, isPlaying)
     );
     // return () => {
     //   audioRef.current.pause();
@@ -86,7 +138,7 @@ function AudioPlayer(props, ref) {
 
   useEffect(() => {
     if (audioRef.current.ended && repeatSong) {
-      setTrackProgress(0);
+      dispatch({ type: 'set-track-progress', payload: 0 });
       audioRef.current.currentTime = 0;
       audioRef.current.play();
     } else if (audioRef.current.ended && !repeatSong) {
@@ -99,9 +151,8 @@ function AudioPlayer(props, ref) {
   useEffect(() => {
     if (isPlaying) {
       timeoutRef.current = setTimeout(() => {
-        console.log('going')
         const audioTime = audioRef.current.currentTime;
-        setTrackProgress(audioTime);
+        dispatch({ type: 'set-track-progress', payload: audioTime });
       }, 500);
     }
   }, [isPlaying, trackProgress, trackLoaded]);
@@ -114,10 +165,10 @@ function AudioPlayer(props, ref) {
 
   function playPause() {
     if (isPlaying) {
-      setIsPlaying(!isPlaying);
+      dispatch({ type: 'play-pause' });
       audioRef.current.pause();
     } else {
-      setIsPlaying(!isPlaying);
+      dispatch({ type: 'play-pause' });
       audioRef.current.play();
     }
   }
@@ -125,11 +176,11 @@ function AudioPlayer(props, ref) {
   function seekMinus10Seconds() {
     if (audioRef.current.currentTime <= 10) {
       // audioRef.current.currentTime = 0;
-      setTrackProgress(0);
+      dispatch({ type: 'set-track-progress', payload: 0 });
     } else {
       const time = audioRef.current.currentTime - 10;
       audioRef.current.currentTime = time;
-      setTrackProgress(time);
+      dispatch({ type: 'set-track-progress', payload: time });
     }
   }
 
@@ -137,11 +188,11 @@ function AudioPlayer(props, ref) {
     if (audioRef.current.duration - audioRef.current.currentTime < 10) {
       const time = audioRef.current.currentTime - 5;
       audioRef.current.currentTime = time;
-      setTrackProgress(time);
+      dispatch({ type: 'set-track-progress', payload: time });
     } else {
       const time = (audioRef.current.currentTime += 10);
       audioRef.current.currentTime = time;
-      setTrackProgress(time);
+      dispatch({ type: 'set-track-progress', payload: time });
     }
   }
 
@@ -150,26 +201,24 @@ function AudioPlayer(props, ref) {
     const newNum = percentage * Math.round(audioRef.current.duration);
 
     clearTimeout(timeoutRef);
-    setTrackProgress(newNum);
+    dispatch({ type: 'set-track-progress', payload: newNum });
     audioRef.current.currentTime = newNum;
   }
 
   function prevSong() {
     if (audioRef.current.currentTime > 7) {
-      setTrackProgress(0);
+      dispatch({ type: 'set-track-progress', payload: 0 });
       audioRef.current.currentTime = 0;
     } else {
-      setTrackProgress(0);
-      setTrackLoaded(false);
+      dispatch({ type: 'prepare-for-next-track' });
       clearTimeout(timeoutRef);
       handlePrev();
     }
   }
 
   function nextSong() {
-    setTrackProgress(0);
+    dispatch({ type: 'prepare-for-next-track' });
     clearTimeout(timeoutRef);
-    setTrackLoaded(false);
     handleNext();
   }
 
@@ -179,14 +228,14 @@ function AudioPlayer(props, ref) {
 
   function handleMuteButtonClick() {
     //turn off
-    if (toggleVolumeIcon) {
+    if (!isMuted) {
       audioRef.current.muted = true;
-      setToggleVolume(!toggleVolumeIcon);
+      dispatch({ type: 'toggle-mute' });
     }
     //turn on
     else {
       audioRef.current.muted = false;
-      setToggleVolume(!toggleVolumeIcon);
+      dispatch({ type: 'toggle-mute' });
     }
   }
 
@@ -203,7 +252,7 @@ function AudioPlayer(props, ref) {
         <MediaButton
           className={repeatSong ? 'repeat active' : 'repeat'}
           icon={<RepeatIcon />}
-          onClick={() => setRepeatSong((repeatSong) => !repeatSong)}
+          onClick={() => dispatch({ type: 'toggle-repeat' })}
         />
 
         <div className="playpause-seek-buttons">
@@ -240,7 +289,7 @@ function AudioPlayer(props, ref) {
         <div className="volume-controls-wrapper">
           <MediaButton
             className="volume-indicator"
-            icon={toggleVolumeIcon ? <VolumeIcon /> : <VolumeMuteIcon />}
+            icon={isMuted ? <VolumeMuteIcon /> : <VolumeIcon />}
             onClick={handleMuteButtonClick}
           />
           <VolumeSlider handleVolume={handleVolume} />
