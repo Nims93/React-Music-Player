@@ -2,6 +2,7 @@ import React, {
   useRef,
   useEffect,
   useState,
+  useReducer,
   forwardRef,
   useImperativeHandle,
 } from 'react';
@@ -25,41 +26,78 @@ function convertToMinsAndSecs(time) {
   const seconds = Math.floor(time - minutes * 60);
 
   let secondsValue;
-  secondsValue =
-    seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
+  secondsValue = seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
   return `${minutes}:${secondsValue}`;
 }
 
-function AudioPlayer(props, ref) {
-  const {
-    handleNext,
-    handlePrev,
-    track,
-    handleTrackProgressForTrackInfoDisplay,
-  } = props;
+function reducer(state, action) {
+  switch (action.type) {
+    case 'play-pause':
+      return {
+        ...state,
+        isPlaying: !state.isPlaying,
+      };
+    case 'set-track-loaded-state':
+      return {
+        ...state,
+        trackLoaded: action.payload,
+      };
+    case 'set-track-progress':
+      return {
+        ...state,
+        trackProgress: action.payload,
+      };
+    case 'unmount-track':
+      return {
+        ...state,
+        trackProgress: 0,
+        trackLoaded: false,
+      };
+    case 'toggle-repeat':
+      return {
+        ...state,
+        repeatSong: !state.repeatSong,
+      };
+    case 'toggle-mute':
+      return {
+        ...state,
+        isMuted: !state.isMuted,
+      };
+    default:
+      return state;
+  }
+}
 
-  const [trackLoaded, setTrackLoaded] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [repeatSong, setRepeatSong] = useState(false);
-  const [toggleVolumeIcon, setToggleVolume] = useState(true);
-  const audioRef = useRef(new Audio(track));
+const initialState = {
+  trackLoaded: false,
+  trackProgress: 0,
+  isPlaying: false,
+  repeatSong: false,
+  isMuted: false,
+};
+
+function AudioPlayer(props, ref) {
+  const { handleNext, handlePrev, track, handleTrackProgressForTrackInfoDisplay } = props;
+  const audioRef = useRef(new Audio());
   const timeoutRef = useRef(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted } = state;
 
   useImperativeHandle(ref, () => ({
     //resets trackElapsedTimeComponent when a track is selected from track selector
-    unloadTrack: () => setTrackLoaded(false),
+    unloadTrack: () => dispatch({ type: 'set-track-loaded-state', payload: false }),
     //resets track elasped time display when track is selcted from track selector
-    resetTrackProgress: () => setTrackProgress(0),
+    resetTrackProgress: () => dispatch({ type: 'set-track-progress', payload: 0 }),
+
+    unmountTrack: () => dispatch({ type: 'unmount-track' }),
     returnTrackTimeElapsedComponent: () => trackTimeElapsedComponent,
   }));
 
   const trackTimeElapsedComponent = (
     <AudioTimeDisplay
       className="elapsed-time-wrapper"
-      currentTimeElapsed={
-        trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`
-      }
+      currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
       songLength={
         trackLoaded ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`
       }
@@ -70,26 +108,18 @@ function AudioPlayer(props, ref) {
   useEffect(() => {
     audioRef.current.pause();
     audioRef.current.src = track;
-    let playPromise = audioRef.current.play();
+    const playPromise = audioRef.current.play();
     if (playPromise) {
       playPromise
-        .then((_) => setTrackLoaded(true))
+        .then((_) => dispatch({ type: 'set-track-loaded-state', payload: true }))
         .then((_) => !isPlaying && audioRef.current.pause())
         .catch((error) => audioRef.current.pause());
     }
-    // audioRef.current.addEventListener('canplay', () => {
-    //   setTrackLoaded(true);
-    //   if (isPlaying) audioRef.current.play();
-    // });
-    // return () => {
-    //   audioRef.current.pause();
-    //   audioRef.current.removeEventListener('canplay', handleCanPlay);
-    // };
   }, [track]);
 
   useEffect(() => {
     if (audioRef.current.ended && repeatSong) {
-      setTrackProgress(0);
+      dispatch({ type: 'set-track-progress', payload: 0 });
       audioRef.current.currentTime = 0;
       audioRef.current.play();
     } else if (audioRef.current.ended && !repeatSong) {
@@ -103,7 +133,7 @@ function AudioPlayer(props, ref) {
     if (isPlaying) {
       timeoutRef.current = setTimeout(() => {
         const audioTime = audioRef.current.currentTime;
-        setTrackProgress(audioTime);
+        dispatch({ type: 'set-track-progress', payload: audioTime });
       }, 500);
     }
   }, [isPlaying, trackProgress, trackLoaded]);
@@ -116,10 +146,10 @@ function AudioPlayer(props, ref) {
 
   function playPause() {
     if (isPlaying) {
-      setIsPlaying(!isPlaying);
+      dispatch({ type: 'play-pause' });
       audioRef.current.pause();
     } else {
-      setIsPlaying(!isPlaying);
+      dispatch({ type: 'play-pause' });
       audioRef.current.play();
     }
   }
@@ -127,11 +157,11 @@ function AudioPlayer(props, ref) {
   function seekMinus10Seconds() {
     if (audioRef.current.currentTime <= 10) {
       // audioRef.current.currentTime = 0;
-      setTrackProgress(0);
+      dispatch({ type: 'set-track-progress', payload: 0 });
     } else {
       const time = audioRef.current.currentTime - 10;
       audioRef.current.currentTime = time;
-      setTrackProgress(time);
+      dispatch({ type: 'set-track-progress', payload: time });
     }
   }
 
@@ -139,11 +169,11 @@ function AudioPlayer(props, ref) {
     if (audioRef.current.duration - audioRef.current.currentTime < 10) {
       const time = audioRef.current.currentTime - 5;
       audioRef.current.currentTime = time;
-      setTrackProgress(time);
+      dispatch({ type: 'set-track-progress', payload: time });
     } else {
       const time = (audioRef.current.currentTime += 10);
       audioRef.current.currentTime = time;
-      setTrackProgress(time);
+      dispatch({ type: 'set-track-progress', payload: time });
     }
   }
 
@@ -152,26 +182,24 @@ function AudioPlayer(props, ref) {
     const newNum = percentage * Math.round(audioRef.current.duration);
 
     clearTimeout(timeoutRef.current);
-    setTrackProgress(newNum);
+    dispatch({ type: 'set-track-progress', payload: newNum });
     audioRef.current.currentTime = newNum;
   }
 
   function prevSong() {
     if (audioRef.current.currentTime > 7) {
-      setTrackProgress(0);
+      dispatch({ type: 'set-track-progress', payload: 0 });
       audioRef.current.currentTime = 0;
     } else {
-      setTrackProgress(0);
-      setTrackLoaded(false);
+      dispatch({ type: 'unmount-track' });
       clearTimeout(timeoutRef);
       handlePrev();
     }
   }
 
   function nextSong() {
-    setTrackProgress(0);
+    dispatch({ type: 'unmount-track' });
     clearTimeout(timeoutRef);
-    setTrackLoaded(false);
     handleNext();
   }
 
@@ -180,15 +208,15 @@ function AudioPlayer(props, ref) {
   }
 
   function handleMuteButtonClick() {
-    //turn off
-    if (toggleVolumeIcon) {
-      audioRef.current.muted = true;
-      setToggleVolume(!toggleVolumeIcon);
-    }
     //turn on
-    else {
+    if (isMuted) {
       audioRef.current.muted = false;
-      setToggleVolume(!toggleVolumeIcon);
+      dispatch({ type: 'toggle-mute' });
+    }
+    //turn off
+    else {
+      audioRef.current.muted = true;
+      dispatch({ type: 'toggle-mute' });
     }
   }
 
@@ -205,7 +233,7 @@ function AudioPlayer(props, ref) {
         <MediaButton
           className={repeatSong ? 'repeat active' : 'repeat'}
           icon={<RepeatIcon />}
-          onClick={() => setRepeatSong((repeatSong) => !repeatSong)}
+          onClick={() => dispatch({ type: 'toggle-repeat' })}
         />
 
         <div className="playpause-seek-buttons">
@@ -215,11 +243,7 @@ function AudioPlayer(props, ref) {
             onClick={seekMinus10Seconds}
           />
 
-          <MediaButton
-            className="prev"
-            icon={<BackwardsIcon />}
-            onClick={prevSong}
-          />
+          <MediaButton className="prev" icon={<BackwardsIcon />} onClick={prevSong} />
 
           <MediaButton
             className="play-pause"
@@ -227,11 +251,7 @@ function AudioPlayer(props, ref) {
             onClick={playPause}
           />
 
-          <MediaButton
-            className="next"
-            icon={<ForwardsIcon />}
-            onClick={nextSong}
-          />
+          <MediaButton className="next" icon={<ForwardsIcon />} onClick={nextSong} />
 
           <MediaButton
             className="skip-10-sec"
@@ -242,7 +262,7 @@ function AudioPlayer(props, ref) {
         <div className="volume-controls-wrapper">
           <MediaButton
             className="volume-indicator"
-            icon={toggleVolumeIcon ? <VolumeIcon /> : <VolumeMuteIcon />}
+            icon={isMuted ? <VolumeMuteIcon /> : <VolumeIcon />}
             onClick={handleMuteButtonClick}
           />
           <VolumeSlider handleVolume={handleVolume} />

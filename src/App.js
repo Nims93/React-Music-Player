@@ -5,20 +5,15 @@ import TrackListView from './components/TrackListView';
 
 function App({ SONGS }) {
   const [trackIdx, setTrackIndex] = useState(0);
-  const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] =
-    useState(null);
+  const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] = useState(null);
   const audioPlayerRef = useRef(null);
   const trackIndex = useMemo(() => trackIdx, [trackIdx]);
 
   const nextTrackName =
-    trackIndex + 1 > SONGS.length - 1
-      ? SONGS[0].name
-      : SONGS[trackIndex + 1].name;
+    trackIndex + 1 > SONGS.length - 1 ? SONGS[0].name : SONGS[trackIndex + 1].name;
 
   const nextTrackArtist =
-    trackIndex + 1 > SONGS.length - 1
-      ? SONGS[0].artist
-      : SONGS[trackIndex + 1].artist;
+    trackIndex + 1 > SONGS.length - 1 ? SONGS[0].artist : SONGS[trackIndex + 1].artist;
 
   function handlePrev() {
     if (trackIndex - 1 < 0) {
@@ -29,16 +24,13 @@ function App({ SONGS }) {
   }
 
   function handleNext() {
-    trackIndex + 1 > SONGS.length - 1
-      ? setTrackIndex(0)
-      : setTrackIndex(trackIndex + 1);
+    trackIndex + 1 > SONGS.length - 1 ? setTrackIndex(0) : setTrackIndex(trackIndex + 1);
   }
 
   function handleTrackSelect(idx) {
     //reset time elasped component to 0
     if (idx !== trackIndex) {
-      audioPlayerRef.current.unloadTrack();
-      audioPlayerRef.current.resetTrackProgress();
+      audioPlayerRef.current.unmountTrack();
       setTrackIndex(idx);
     }
   }
