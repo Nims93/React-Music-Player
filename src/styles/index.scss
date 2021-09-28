@@ -1,7 +1,3 @@
-@import './trackInfoStyles';
-@import './trackListStyles';
-@import './playerStyles';
-
 *,
 :before,
 :after {
@@ -53,3 +49,7 @@ button {
 svg {
   padding: 0;
 }
+
+@import './trackInfoStyles';
+@import './trackListStyles';
+@import './playerStyles';

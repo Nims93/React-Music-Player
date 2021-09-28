@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './styles/index.css';
+import './styles/index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
@@ -18,8 +18,6 @@ import NaturesExperiment from './media/theexperiment.mp3';
 import Fluidity from './media/tobylane-fluidity.mp3';
 import PinaColada from './media/tobylane-pinacolada.mp3';
 import MelodicTechno from './media/zenman-melodictechno01.mp3';
-
-import UntoldStories from './media/Castr6_-_Untold_Stories.mp3';
 import AllThat from './media/bensound-allthat.mp3';
 import BirthOfAHero from './media/bensound-birthofahero.mp3';
 import Dreams from './media/bensound-dreams.mp3';
@@ -40,8 +38,6 @@ import NaturesExperimentCover from './media/theexperiment.jpg';
 import FluidityCover from './media/fluidity.jpg';
 import PinaColadaCover from './media/pinacolada.jpg';
 import MelodicTechnoCover from './media/backgroundloopmelodictechno.jpg';
-
-import UntoldStoriesCover from './media/Castr6_-_Untold_Stories.jpg';
 import AllThatCover from './media/bensound-allthat.jpg';
 import BirthOfAHeroCover from './media/birthofahero.jpg';
 import DreamsCover from './media/dreams.jpg';

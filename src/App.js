@@ -35,7 +35,7 @@ function App({ SONGS }) {
     }
   }
 
-  function handleTrackProgress(AudioDislayComponent) {
+  function getTrackProgressComponent(AudioDislayComponent) {
     setTrackTimeElapsedComponent(AudioDislayComponent);
   }
 
@@ -62,7 +62,7 @@ function App({ SONGS }) {
         handlePrev={handlePrev}
         handleNext={handleNext}
         track={SONGS[trackIndex].songUrl}
-        handleTrackProgressForTrackInfoDisplay={handleTrackProgress}
+        getTrackProgressComponent={getTrackProgressComponent}
         ref={audioPlayerRef}
       />
     </div>
