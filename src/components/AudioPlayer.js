@@ -1,7 +1,6 @@
 import React, {
   useRef,
   useEffect,
-  useState,
   useReducer,
   forwardRef,
   useImperativeHandle,
@@ -37,32 +36,38 @@ function reducer(state, action) {
         ...state,
         isPlaying: !state.isPlaying,
       };
+
     case 'set-track-loaded-state':
       return {
         ...state,
         trackLoaded: action.payload,
       };
+
     case 'set-track-progress':
       return {
         ...state,
         trackProgress: action.payload,
       };
+
     case 'unmount-track':
       return {
         ...state,
         trackProgress: 0,
         trackLoaded: false,
       };
+
     case 'toggle-repeat':
       return {
         ...state,
         repeatSong: !state.repeatSong,
       };
+
     case 'toggle-mute':
       return {
         ...state,
         isMuted: !state.isMuted,
       };
+
     default:
       return state;
   }
@@ -76,22 +81,17 @@ const initialState = {
   isMuted: false,
 };
 
-function AudioPlayer(props, ref) {
-  const { handleNext, handlePrev, track, handleTrackProgressForTrackInfoDisplay } = props;
+export default forwardRef(function AudioPlayer(props, ref) {
   const audioRef = useRef(new Audio());
   const timeoutRef = useRef(null);
   const [state, dispatch] = useReducer(reducer, initialState);
-
   const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted } = state;
+  const { handleNext, handlePrev, track, getTrackProgressComponent } = props;
 
   useImperativeHandle(ref, () => ({
     //resets trackElapsedTimeComponent when a track is selected from track selector
-    unloadTrack: () => dispatch({ type: 'set-track-loaded-state', payload: false }),
     //resets track elasped time display when track is selcted from track selector
-    resetTrackProgress: () => dispatch({ type: 'set-track-progress', payload: 0 }),
-
     unmountTrack: () => dispatch({ type: 'unmount-track' }),
-    returnTrackTimeElapsedComponent: () => trackTimeElapsedComponent,
   }));
 
   const trackTimeElapsedComponent = (
@@ -104,17 +104,17 @@ function AudioPlayer(props, ref) {
     />
   );
 
-  //handle track switching
+  //handle track/src switching
   useEffect(() => {
-    audioRef.current.pause();
     audioRef.current.src = track;
     const playPromise = audioRef.current.play();
-    if (playPromise) {
+    playPromise &&
       playPromise
-        .then((_) => dispatch({ type: 'set-track-loaded-state', payload: true }))
-        .then((_) => !isPlaying && audioRef.current.pause())
-        .catch((error) => audioRef.current.pause());
-    }
+        .then(() => {
+          !isPlaying && audioRef.current.pause();
+          dispatch({ type: 'set-track-loaded-state', payload: true });
+        })
+        .catch((error) => {});
   }, [track]);
 
   useEffect(() => {
@@ -138,10 +138,10 @@ function AudioPlayer(props, ref) {
     }
   }, [isPlaying, trackProgress, trackLoaded]);
 
-  //sends <AudioTimeDisplay /> up to App component to be sent back down to
-  //artwork display component
+  //sends <AudioTimeDisplay /> component up to App component to be sent back
+  //down to artwork display component
   useEffect(() => {
-    handleTrackProgressForTrackInfoDisplay(trackTimeElapsedComponent);
+    getTrackProgressComponent(trackTimeElapsedComponent);
   }, [trackProgress, trackLoaded, track]);
 
   function playPause() {
@@ -153,10 +153,10 @@ function AudioPlayer(props, ref) {
       audioRef.current.play();
     }
   }
-  //
+
   function seekMinus10Seconds() {
     if (audioRef.current.currentTime <= 10) {
-      // audioRef.current.currentTime = 0;
+      audioRef.current.currentTime = 0;
       dispatch({ type: 'set-track-progress', payload: 0 });
     } else {
       const time = audioRef.current.currentTime - 10;
@@ -261,7 +261,7 @@ function AudioPlayer(props, ref) {
         </div>
         <div className="volume-controls-wrapper">
           <MediaButton
-            className="volume-indicator"
+            className="volume-icon"
             icon={isMuted ? <VolumeMuteIcon /> : <VolumeIcon />}
             onClick={handleMuteButtonClick}
           />
@@ -270,6 +270,4 @@ function AudioPlayer(props, ref) {
       </div>
     </div>
   );
-}
-
-export default AudioPlayer = forwardRef(AudioPlayer);
+});
