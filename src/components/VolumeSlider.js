@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
+import InputRange from 'react-input-range';
+// import 'react-input-range/lib/css/index.css';
 
-export default function VolumeSlider(props) {
-  const { handleVolume } = props;
-
-  const [volume, setVolume] = useState(100);
+export default function VolumeSlider({ handleVolume }) {
+  const [volume, setVolume] = useState(1);
   return (
-    <input
-      type="range"
-      value={volume}
-      step="0.0125"
-      min="0"
-      max="1"
+    <InputRange
       className="volume"
+      maxValue={1}
+      minValue={0}
+      step={0.025}
+      value={volume}
       onChange={(e) => {
-        setVolume(e.target.value);
-        handleVolume(e.target.value);
+        setVolume(e);
+        handleVolume(e);
       }}
-    ></input>
+    />
+    // <input
+    //   id="volume"
+    //   type="range"
+    //   step="0.025"
+    //   min="0"
+    //   max="1"
+    //   value={volume}
+    //   onChange={(e) => {
+    //     console.log(e);
+    //     setVolume(e.target.value);
+    //     handleVolume(e.target.value);
+    //   }}
+    // ></input>
   );
 }
