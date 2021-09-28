@@ -56,11 +56,7 @@ export default function SeekBar(props) {
   };
 
   return (
-    <div
-      ref={seekBarRef}
-      className="seek-bar-wrapper"
-      onMouseDown={handleMouseDown}
-    >
+    <div ref={seekBarRef} className="seek-bar-wrapper" onMouseDown={handleMouseDown}>
       <div
         className={userIsSeeking ? 'seek-bar currently-seeking' : 'seek-bar'}
         style={{ width: `${(trackProgress / totalDuration) * 100}%` }}
