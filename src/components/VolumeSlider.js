@@ -6,7 +6,6 @@ export default function VolumeSlider({ handleVolume }) {
   const [volume, setVolume] = useState(1);
   return (
     <InputRange
-      className="volume"
       maxValue={1}
       minValue={0}
       step={0.025}
@@ -16,18 +15,5 @@ export default function VolumeSlider({ handleVolume }) {
         handleVolume(e);
       }}
     />
-    // <input
-    //   id="volume"
-    //   type="range"
-    //   step="0.025"
-    //   min="0"
-    //   max="1"
-    //   value={volume}
-    //   onChange={(e) => {
-    //     console.log(e);
-    //     setVolume(e.target.value);
-    //     handleVolume(e.target.value);
-    //   }}
-    // ></input>
   );
 }
