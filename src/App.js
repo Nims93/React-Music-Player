@@ -91,7 +91,7 @@ function App({ SONGS }) {
   //     }
   //   />
   // );
-
+  console.log('App component rerender');
   const track = useMemo(() => SONGS[trackIndex].songUrl, [SONGS, trackIndex]);
 
   const nextTrackName =
@@ -100,7 +100,41 @@ function App({ SONGS }) {
   const nextTrackArtist =
     trackIndex + 1 > SONGS.length - 1 ? SONGS[0].artist : SONGS[trackIndex + 1].artist;
 
-  function handlePrev() {
+  //handle track/src change
+  useEffect(() => {
+    audioRef.current.src = track;
+    const playPromise = audioRef.current.play();
+    playPromise &&
+      playPromise
+        .then(() => {
+          !isPlaying && audioRef.current.pause();
+          dispatch({ type: 'set-track-loaded-state', payload: true });
+        })
+        .catch((e) => {});
+  }, [track]);
+
+  useEffect(() => {
+    if (audioRef.current.ended && repeatSong) {
+      dispatch({ type: 'set-track-progress', payload: 0 });
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else if (audioRef.current.ended && !repeatSong) {
+      handleNextSong();
+    }
+  }, [trackProgress, repeatSong]);
+
+  //timeout callback for tracking current elapsed track time.
+  //called whenever that track plays and when elapsed track time changes
+  useEffect(() => {
+    if (isPlaying) {
+      timeoutRef.current = setTimeout(() => {
+        const audioCurrentTimeElapsed = audioRef.current.currentTime;
+        dispatch({ type: 'set-track-progress', payload: audioCurrentTimeElapsed });
+      }, 500);
+    }
+  }, [isPlaying, trackProgress, trackLoaded]);
+
+  function handlePrevSong() {
     if (audioRef.current.currentTime > 7) {
       dispatch({ type: 'set-track-progress', payload: 0 });
       audioRef.current.currentTime = 0;
@@ -113,7 +147,7 @@ function App({ SONGS }) {
     }
   }
 
-  function handleNext() {
+  function handleNextSong() {
     dispatch({ type: 'unmount-track' });
     clearTimeout(timeoutRef);
     // trackIndex + 1 > SONGS.length - 1 ? setTrackIndex(0) : setTrackIndex(trackIndex + 1);
@@ -130,43 +164,6 @@ function App({ SONGS }) {
       dispatch({ type: 'set-track-index', payload: idx });
     }
   }
-
-  //handle track/src change
-  useEffect(() => {
-    audioRef.current.src = track;
-    const playPromise = audioRef.current.play();
-    playPromise &&
-      playPromise
-        .then(() => {
-          if (!isPlaying) audioRef.current.pause();
-          dispatch({ type: 'set-track-loaded-state', payload: true });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-  }, [track]);
-
-  useEffect(() => {
-    if (audioRef.current.ended && repeatSong) {
-      dispatch({ type: 'set-track-progress', payload: 0 });
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    } else if (audioRef.current.ended && !repeatSong) {
-      handleNext();
-    }
-  }, [trackProgress, repeatSong]);
-
-  //timeout callback for tracking current elapsed track time.
-  //called whenever that track plays and when elapsed track time changes
-  useEffect(() => {
-    if (isPlaying) {
-      timeoutRef.current = setTimeout(() => {
-        const audioCurrentTimeElapsed = audioRef.current.currentTime;
-        dispatch({ type: 'set-track-progress', payload: audioCurrentTimeElapsed });
-      }, 500);
-    }
-  }, [isPlaying, trackProgress, trackLoaded]);
-  console.log(isPlaying);
 
   function playPause() {
     if (isPlaying) {
@@ -195,7 +192,7 @@ function App({ SONGS }) {
 
   function seekPlus10Seconds() {
     if (audioRef.current.duration - audioRef.current.currentTime < 10) {
-      handleNext();
+      handleNextSong();
     } else {
       const time = (audioRef.current.currentTime += 10);
       audioRef.current.currentTime = time;
@@ -246,8 +243,8 @@ function App({ SONGS }) {
       <AudioPlayer
         playPause={playPause}
         isPlaying={isPlaying}
-        handlePrev={handlePrev}
-        handleNext={handleNext}
+        handlePrevSong={handlePrevSong}
+        handleNextSong={handleNextSong}
         track={SONGS[trackIndex].songUrl}
         getTrackProgressComponent={getTrackProgressComponent}
         ref={audioPlayerRef}

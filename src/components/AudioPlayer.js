@@ -89,8 +89,8 @@ export default forwardRef(function AudioPlayer(props, ref) {
   const {
     playPause,
     isPlaying,
-    handleNext,
-    handlePrev,
+    handleNextSong,
+    handlePrevSong,
     track,
     getTrackProgressComponent,
   } = props;
@@ -130,7 +130,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
       audioRef.current.currentTime = 0;
       audioRef.current.play();
     } else if (audioRef.current.ended && !repeatSong) {
-      nextSong();
+      // nextSong();
     }
   }, [trackProgress, repeatSong]);
 
@@ -176,7 +176,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
 
   function seekPlus10Seconds() {
     if (audioRef.current.duration - audioRef.current.currentTime < 10) {
-      nextSong();
+      // nextSong();
     } else {
       const time = (audioRef.current.currentTime += 10);
       audioRef.current.currentTime = time;
@@ -193,22 +193,22 @@ export default forwardRef(function AudioPlayer(props, ref) {
     audioRef.current.currentTime = newNum;
   }
 
-  function prevSong() {
-    if (audioRef.current.currentTime > 7) {
-      dispatch({ type: 'set-track-progress', payload: 0 });
-      audioRef.current.currentTime = 0;
-    } else {
-      dispatch({ type: 'unmount-track' });
-      clearTimeout(timeoutRef);
-      handlePrev();
-    }
-  }
+  // function prevSong() {
+  //   if (audioRef.current.currentTime > 7) {
+  //     dispatch({ type: 'set-track-progress', payload: 0 });
+  //     audioRef.current.currentTime = 0;
+  //   } else {
+  //     dispatch({ type: 'unmount-track' });
+  //     clearTimeout(timeoutRef);
+  //     handlePrev();
+  //   }
+  // }
 
-  function nextSong() {
-    dispatch({ type: 'unmount-track' });
-    clearTimeout(timeoutRef);
-    handleNext();
-  }
+  // function nextSong() {
+  //   dispatch({ type: 'unmount-track' });
+  //   clearTimeout(timeoutRef);
+  //   handleNext();
+  // }
 
   function handleVolume(volume) {
     audioRef.current.volume = volume;
@@ -250,7 +250,11 @@ export default forwardRef(function AudioPlayer(props, ref) {
             onClick={seekMinus10Seconds}
           />
 
-          <MediaButton className="prev" icon={<BackwardsIcon />} onClick={prevSong} />
+          <MediaButton
+            className="prev"
+            icon={<BackwardsIcon />}
+            onClick={handlePrevSong}
+          />
 
           <MediaButton
             className="play-pause"
@@ -258,7 +262,11 @@ export default forwardRef(function AudioPlayer(props, ref) {
             onClick={playPause}
           />
 
-          <MediaButton className="next" icon={<ForwardsIcon />} onClick={nextSong} />
+          <MediaButton
+            className="next"
+            icon={<ForwardsIcon />}
+            onClick={handleNextSong}
+          />
 
           <MediaButton
             className="skip-10-sec"
