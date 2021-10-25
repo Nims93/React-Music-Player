@@ -1,28 +1,36 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-let isMouseDown = false;
-let mouseMoveSeekDelay = false;
-let mouseUpSeekDelay = false;
+// let isMouseDown = false;
+// let mouseMoveSeekDelay = false;
+// let mouseUpSeekDelay = false;
 
 export default function SeekBar(props) {
   const { trackProgress, totalDuration, seekBarScrub, audioRef } = props;
   const [userIsSeeking, setSeeking] = useState(false);
   const seekBarRef = useRef(null);
   const mouseUpSeekDelayTimeoutRef = useRef(null);
+  const isMouseDown = useRef(false);
+  const mouseMoveSeekDelay = useRef(false);
+  const mouseUpSeekDelay = useRef(false);
 
   useEffect(() => {
     document.body.addEventListener('mouseup', handleMouseUp);
     document.body.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.body.removeEventListener('mouseup', handleMouseUp);
+      document.body.removeEventListener('mousemove', handleMouseMove);
+    };
   });
 
   const handleMouseUp = (e) => {
     e.preventDefault();
-    if (isMouseDown) {
+    if (isMouseDown.current) {
       setSeeking((isSeeking) => !isSeeking);
-      isMouseDown = false;
-      mouseMoveSeekDelay = false;
+      isMouseDown.current = false;
+      mouseMoveSeekDelay.current = false;
       audioRef.current.muted = false;
-      if (!mouseUpSeekDelay) {
+      if (!mouseUpSeekDelay.current) {
         seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
       }
     }
@@ -30,13 +38,13 @@ export default function SeekBar(props) {
 
   const handleMouseMove = (e) => {
     e.preventDefault();
-    if (isMouseDown && mouseMoveSeekDelay) {
+    if (isMouseDown.current && mouseMoveSeekDelay.current) {
       audioRef.current.muted = true;
       setTimeout(() => {
-        mouseMoveSeekDelay = true;
+        mouseMoveSeekDelay.current = true;
         seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
       }, 60);
-      mouseMoveSeekDelay = false;
+      mouseMoveSeekDelay.current = false;
     }
   };
 
@@ -44,12 +52,12 @@ export default function SeekBar(props) {
     if (e.buttons === 1) {
       e.preventDefault();
       setSeeking((userIsSeeking) => !userIsSeeking);
-      isMouseDown = true;
-      mouseMoveSeekDelay = true;
+      isMouseDown.current = true;
+      mouseMoveSeekDelay.current = true;
       seekBarScrub(e.clientX, seekBarRef.current.offsetWidth);
-      mouseUpSeekDelay = true;
+      mouseUpSeekDelay.current = true;
       mouseUpSeekDelayTimeoutRef.current = setTimeout(
-        () => (mouseUpSeekDelay = false),
+        () => (mouseUpSeekDelay.current = false),
         100
       );
     }
