@@ -82,17 +82,24 @@ const initialState = {
 };
 
 export default forwardRef(function AudioPlayer(props, ref) {
-  const audioRef = useRef(new Audio());
+  // const audioRef = useRef(new Audio());
   const timeoutRef = useRef(null);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { trackLoaded, trackProgress, repeatSong, isMuted } = state;
+  const { trackLoaded, trackProgress } = state;
+  // repeatSong,isMuted
   const {
     playPause,
     isPlaying,
+    handleRepeatButtonClick,
+    repeatSong,
+    handleMuteButtonClick,
+    handleVolume,
+    isMuted,
     handleNextSong,
     handlePrevSong,
     seekMinus10Seconds,
     seekPlus10Seconds,
+    audioRef,
     track,
     // getTrackProgressComponent,
   } = props;
@@ -103,15 +110,15 @@ export default forwardRef(function AudioPlayer(props, ref) {
     unmountTrack: () => dispatch({ type: 'unmount-track' }),
   }));
 
-  const trackTimeElapsedComponent = (
-    <AudioTimeDisplay
-      className="elapsed-time-wrapper"
-      currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
-      songLength={
-        trackLoaded ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`
-      }
-    />
-  );
+  // const trackTimeElapsedComponent = (
+  //   <AudioTimeDisplay
+  //     className="elapsed-time-wrapper"
+  //     currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
+  //     songLength={
+  //       trackLoaded ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`
+  //     }
+  //   />
+  // );
 
   //handle track/src change
   useEffect(() => {
@@ -212,22 +219,22 @@ export default forwardRef(function AudioPlayer(props, ref) {
   //   handleNext();
   // }
 
-  function handleVolume(volume) {
-    audioRef.current.volume = volume;
-  }
+  // function handleVolume(volume) {
+  //   audioRef.current.volume = volume;
+  // }
 
-  function handleMuteButtonClick() {
-    //turn on
-    if (isMuted) {
-      audioRef.current.muted = false;
-      dispatch({ type: 'toggle-mute' });
-    }
-    //turn off
-    else {
-      audioRef.current.muted = true;
-      dispatch({ type: 'toggle-mute' });
-    }
-  }
+  // function handleMuteButtonClick() {
+  //   //turn on
+  //   if (isMuted) {
+  //     audioRef.current.muted = false;
+  //     dispatch({ type: 'toggle-mute' });
+  //   }
+  //   //turn off
+  //   else {
+  //     audioRef.current.muted = true;
+  //     dispatch({ type: 'toggle-mute' });
+  //   }
+  // }
 
   return (
     <div className="player">
@@ -242,7 +249,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
         <MediaButton
           className={repeatSong ? 'repeat active' : 'repeat'}
           icon={<RepeatIcon />}
-          onClick={() => dispatch({ type: 'toggle-repeat' })}
+          onClick={handleRepeatButtonClick}
         />
 
         <div className="playpause-seek-buttons">
@@ -279,7 +286,13 @@ export default forwardRef(function AudioPlayer(props, ref) {
         <div className="volume-controls-wrapper">
           <MediaButton
             className="volume-icon"
-            icon={isMuted ? <VolumeMuteIcon /> : <VolumeIcon />}
+            icon={
+              isMuted || audioRef.current.volume === 0 ? (
+                <VolumeMuteIcon />
+              ) : (
+                <VolumeIcon />
+              )
+            }
             onClick={handleMuteButtonClick}
           />
           <VolumeSlider handleVolume={handleVolume} />

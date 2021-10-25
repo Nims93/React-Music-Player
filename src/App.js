@@ -193,7 +193,13 @@ function App({ SONGS }) {
 
   function seekPlus10Seconds() {
     if (audioRef.current.duration - audioRef.current.currentTime < 10) {
-      handleNextSong();
+      if (repeatSong) {
+        dispatch({ type: 'set-track-progress', payload: 0 });
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      } else {
+        handleNextSong();
+      }
     } else {
       const time = (audioRef.current.currentTime += 10);
       audioRef.current.currentTime = time;
@@ -206,16 +212,20 @@ function App({ SONGS }) {
   }
 
   function handleMuteButtonClick() {
-    //turn on
+    //mute
     if (isMuted) {
       audioRef.current.muted = false;
       dispatch({ type: 'toggle-mute' });
     }
-    //turn off
+    //unmute
     else {
       audioRef.current.muted = true;
       dispatch({ type: 'toggle-mute' });
     }
+  }
+
+  function handleRepeatButtonClick() {
+    dispatch({ type: 'toggle-repeat' });
   }
 
   // function getTrackProgressComponent(AudioDislayComponent) {
@@ -244,10 +254,16 @@ function App({ SONGS }) {
       <AudioPlayer
         playPause={playPause}
         isPlaying={isPlaying}
+        handleRepeatButtonClick={handleRepeatButtonClick}
+        repeatSong={repeatSong}
+        handleMuteButtonClick={handleMuteButtonClick}
+        handleVolume={handleVolume}
+        isMuted={isMuted}
         handlePrevSong={handlePrevSong}
         handleNextSong={handleNextSong}
         seekMinus10Seconds={seekMinus10Seconds}
         seekPlus10Seconds={seekPlus10Seconds}
+        audioRef={audioRef}
         track={SONGS[trackIndex].songUrl}
         // getTrackProgressComponent={getTrackProgressComponent}
         ref={audioPlayerRef}
