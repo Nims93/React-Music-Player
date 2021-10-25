@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useReducer, useMemo } from 'react';
+import React, { useRef, useEffect, useReducer, useCallback } from 'react';
 import AudioPlayerBar from './components/AudioPlayerBar';
 import ArtworkDisplay from './components/ArtworkMain';
 import TrackListView from './components/TrackListView';
@@ -102,10 +102,15 @@ function App({ SONGS }) {
       playPromise
         .then(() => {
           console.log('callback');
+
           !isPlaying && audioRef.current.pause();
           dispatch({ type: 'set-track-loaded-state', payload: true });
         })
         .catch((e) => {});
+    // audioRef.current.addEventListener('timeupdate', () => {
+    //   const audioCurrentTimeElapsed = audioRef.current.currentTime;
+    //   dispatch({ type: 'set-track-progress', payload: audioCurrentTimeElapsed });
+    // });
   }, [track]);
 
   useEffect(() => {
@@ -123,7 +128,6 @@ function App({ SONGS }) {
   useEffect(() => {
     if (isPlaying) {
       timeoutRef.current = setTimeout(() => {
-        console.log('timeout callback');
         const audioCurrentTimeElapsed = audioRef.current.currentTime;
         dispatch({ type: 'set-track-progress', payload: audioCurrentTimeElapsed });
       }, 500);
@@ -203,14 +207,14 @@ function App({ SONGS }) {
     }
   }
 
-  function seekBarScrub(mouseDownXCoord, seekBarWidth) {
+  const seekBarScrub = useCallback((mouseDownXCoord, seekBarWidth) => {
     const percentage = ((mouseDownXCoord / seekBarWidth) * 100) / 100;
     const newNum = percentage * Math.round(audioRef.current.duration);
 
     clearTimeout(timeoutRef.current);
     dispatch({ type: 'set-track-progress', payload: newNum });
     audioRef.current.currentTime = newNum;
-  }
+  }, []);
 
   function handleVolume(volume) {
     audioRef.current.volume = volume;
