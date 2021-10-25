@@ -1,4 +1,4 @@
-import React, { useRef, useReducer, useState, useMemo } from 'react';
+import React, { useRef, useEffect, useReducer, useState, useMemo } from 'react';
 import AudioPlayer from './components/AudioPlayer';
 import ArtworkDisplay from './components/ArtworkMain';
 import TrackListView from './components/TrackListView';
@@ -17,7 +17,7 @@ function reducer(state, action) {
     case 'play/pause':
       return {
         ...state,
-        isPlaying: action?.payload || !state.isPlaying,
+        isPlaying: !state.isPlaying,
       };
 
     case 'set-track-loaded-state':
@@ -62,7 +62,7 @@ function reducer(state, action) {
   }
 }
 
-const initialState = {
+const initState = {
   trackLoaded: false,
   trackProgress: 0,
   isPlaying: false,
@@ -74,13 +74,25 @@ const initialState = {
 function App({ SONGS }) {
   const audioRef = useRef(new Audio());
   const timeoutRef = useRef(null);
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initState);
   const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted, trackIndex } =
     state;
   const [trackIdx, setTrackIndex] = useState(0);
   const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] = useState(null);
   const audioPlayerRef = useRef(null);
   // const trackIndex = useMemo(() => trackIdx, [trackIdx]);
+
+  // const trackTimeElapsedComponent = (
+  //   <AudioTimeDisplay
+  //     className="elapsed-time-wrapper"
+  //     currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
+  //     songLength={
+  //       trackLoaded ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`
+  //     }
+  //   />
+  // );
+
+  const track = useMemo(() => SONGS[trackIndex].songUrl, [SONGS, trackIndex]);
 
   const nextTrackName =
     trackIndex + 1 > SONGS.length - 1 ? SONGS[0].name : SONGS[trackIndex + 1].name;
@@ -89,16 +101,21 @@ function App({ SONGS }) {
     trackIndex + 1 > SONGS.length - 1 ? SONGS[0].artist : SONGS[trackIndex + 1].artist;
 
   function handlePrev() {
-    if (trackIndex - 1 < 0) {
-      // setTrackIndex(SONGS.length - 1);
-      dispatch({ type: 'set-track-index', payload: SONGS.length - 1 });
+    if (audioRef.current.currentTime > 7) {
+      dispatch({ type: 'set-track-progress', payload: 0 });
+      audioRef.current.currentTime = 0;
     } else {
-      // setTrackIndex(trackIndex - 1);
-      dispatch({ type: 'set-track-index', payload: trackIndex - 1 });
+      dispatch({ type: 'unmount-track' });
+      clearTimeout(timeoutRef);
+      trackIndex - 1 < 0
+        ? dispatch({ type: 'set-track-index', payload: SONGS.length - 1 })
+        : dispatch({ type: 'set-track-index', payload: trackIndex - 1 });
     }
   }
 
   function handleNext() {
+    dispatch({ type: 'unmount-track' });
+    clearTimeout(timeoutRef);
     // trackIndex + 1 > SONGS.length - 1 ? setTrackIndex(0) : setTrackIndex(trackIndex + 1);
     trackIndex + 1 > SONGS.length - 1
       ? dispatch({ type: 'set-track-index', payload: 0 })
@@ -111,6 +128,95 @@ function App({ SONGS }) {
       audioPlayerRef.current.unmountTrack();
       // setTrackIndex(idx);
       dispatch({ type: 'set-track-index', payload: idx });
+    }
+  }
+
+  //handle track/src change
+  useEffect(() => {
+    audioRef.current.src = track;
+    const playPromise = audioRef.current.play();
+    playPromise &&
+      playPromise
+        .then(() => {
+          if (!isPlaying) audioRef.current.pause();
+          dispatch({ type: 'set-track-loaded-state', payload: true });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+  }, [track]);
+
+  useEffect(() => {
+    if (audioRef.current.ended && repeatSong) {
+      dispatch({ type: 'set-track-progress', payload: 0 });
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else if (audioRef.current.ended && !repeatSong) {
+      handleNext();
+    }
+  }, [trackProgress, repeatSong]);
+
+  //timeout callback for tracking current elapsed track time.
+  //called whenever that track plays and when elapsed track time changes
+  useEffect(() => {
+    if (isPlaying) {
+      timeoutRef.current = setTimeout(() => {
+        const audioCurrentTimeElapsed = audioRef.current.currentTime;
+        dispatch({ type: 'set-track-progress', payload: audioCurrentTimeElapsed });
+      }, 500);
+    }
+  }, [isPlaying, trackProgress, trackLoaded]);
+  console.log(isPlaying);
+
+  function playPause() {
+    if (isPlaying) {
+      dispatch({ type: 'play/pause' });
+      audioRef.current.pause();
+    } else {
+      audioRef.current
+        .play()
+        .then(() => {
+          dispatch({ type: 'play/pause' });
+        })
+        .catch((err) => console.log(err));
+    }
+  }
+
+  function seekMinus10Seconds() {
+    if (audioRef.current.currentTime <= 10) {
+      audioRef.current.currentTime = 0;
+      dispatch({ type: 'set-track-progress', payload: 0 });
+    } else {
+      const time = audioRef.current.currentTime - 10;
+      audioRef.current.currentTime = time;
+      dispatch({ type: 'set-track-progress', payload: time });
+    }
+  }
+
+  function seekPlus10Seconds() {
+    if (audioRef.current.duration - audioRef.current.currentTime < 10) {
+      handleNext();
+    } else {
+      const time = (audioRef.current.currentTime += 10);
+      audioRef.current.currentTime = time;
+      dispatch({ type: 'set-track-progress', payload: time });
+    }
+  }
+
+  function handleVolume(volume) {
+    audioRef.current.volume = volume;
+  }
+
+  function handleMuteButtonClick() {
+    //turn on
+    if (isMuted) {
+      audioRef.current.muted = false;
+      dispatch({ type: 'toggle-mute' });
+    }
+    //turn off
+    else {
+      audioRef.current.muted = true;
+      dispatch({ type: 'toggle-mute' });
     }
   }
 
@@ -138,6 +244,8 @@ function App({ SONGS }) {
       </div>
 
       <AudioPlayer
+        playPause={playPause}
+        isPlaying={isPlaying}
         handlePrev={handlePrev}
         handleNext={handleNext}
         track={SONGS[trackIndex].songUrl}

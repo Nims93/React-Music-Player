@@ -34,7 +34,7 @@ function reducer(state, action) {
     case 'play-pause':
       return {
         ...state,
-        isPlaying: !state.isPlaying,
+        isPlaying: action?.payload || !state.isPlaying,
       };
 
     case 'set-track-loaded-state':
@@ -85,8 +85,15 @@ export default forwardRef(function AudioPlayer(props, ref) {
   const audioRef = useRef(new Audio());
   const timeoutRef = useRef(null);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted } = state;
-  const { handleNext, handlePrev, track, getTrackProgressComponent } = props;
+  const { trackLoaded, trackProgress, repeatSong, isMuted } = state;
+  const {
+    playPause,
+    isPlaying,
+    handleNext,
+    handlePrev,
+    track,
+    getTrackProgressComponent,
+  } = props;
 
   useImperativeHandle(ref, () => ({
     //resets trackElapsedTimeComponent when a track is selected from track selector
@@ -144,15 +151,17 @@ export default forwardRef(function AudioPlayer(props, ref) {
     getTrackProgressComponent(trackTimeElapsedComponent);
   }, [trackProgress, trackLoaded, track]);
 
-  function playPause() {
-    if (isPlaying) {
-      dispatch({ type: 'play-pause' });
-      audioRef.current.pause();
-    } else {
-      dispatch({ type: 'play-pause' });
-      audioRef.current.play();
-    }
-  }
+  // function playPause() {
+  //   if (isPlaying) {
+  //     dispatch({ type: 'play-pause' });
+  //     audioRef.current.pause();
+  //   } else {
+  //     audioRef.current
+  //       .play()
+  //       .then(() => dispatch({ type: 'play-pause' }))
+  //       .catch((err) => console.log(err));
+  //   }
+  // }
 
   function seekMinus10Seconds() {
     if (audioRef.current.currentTime <= 10) {
@@ -167,9 +176,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
 
   function seekPlus10Seconds() {
     if (audioRef.current.duration - audioRef.current.currentTime < 10) {
-      const time = audioRef.current.currentTime - 5;
-      audioRef.current.currentTime = time;
-      dispatch({ type: 'set-track-progress', payload: time });
+      nextSong();
     } else {
       const time = (audioRef.current.currentTime += 10);
       audioRef.current.currentTime = time;
