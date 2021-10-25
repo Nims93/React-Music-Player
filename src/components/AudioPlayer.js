@@ -92,7 +92,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
     handleNextSong,
     handlePrevSong,
     track,
-    getTrackProgressComponent,
+    // getTrackProgressComponent,
   } = props;
 
   useImperativeHandle(ref, () => ({
@@ -147,9 +147,9 @@ export default forwardRef(function AudioPlayer(props, ref) {
 
   //sends <AudioTimeDisplay /> component up to App component to be sent back
   //down to artwork display component
-  useEffect(() => {
-    getTrackProgressComponent(trackTimeElapsedComponent);
-  }, [trackProgress, trackLoaded, track]);
+  // useEffect(() => {
+  //   getTrackProgressComponent(trackTimeElapsedComponent);
+  // }, [trackProgress, trackLoaded, track]);
 
   // function playPause() {
   //   if (isPlaying) {

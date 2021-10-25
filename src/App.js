@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useReducer, useState, useMemo } from 'react';
 import AudioPlayer from './components/AudioPlayer';
 import ArtworkDisplay from './components/ArtworkMain';
 import TrackListView from './components/TrackListView';
+import AudioTimeDisplay from './components/AudioTimeDisplay';
 
 function convertToMinsAndSecs(time) {
   const minutes = Math.floor(time / 60);
@@ -78,19 +79,19 @@ function App({ SONGS }) {
   const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted, trackIndex } =
     state;
   const [trackIdx, setTrackIndex] = useState(0);
-  const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] = useState(null);
+  // const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] = useState(null);
   const audioPlayerRef = useRef(null);
   // const trackIndex = useMemo(() => trackIdx, [trackIdx]);
 
-  // const trackTimeElapsedComponent = (
-  //   <AudioTimeDisplay
-  //     className="elapsed-time-wrapper"
-  //     currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
-  //     songLength={
-  //       trackLoaded ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`
-  //     }
-  //   />
-  // );
+  const trackTimeElapsedComponent = (
+    <AudioTimeDisplay
+      className="elapsed-time-wrapper"
+      currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
+      songLength={
+        trackLoaded ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`
+      }
+    />
+  );
   console.log('App component rerender');
   const track = useMemo(() => SONGS[trackIndex].songUrl, [SONGS, trackIndex]);
 
@@ -217,9 +218,9 @@ function App({ SONGS }) {
     }
   }
 
-  function getTrackProgressComponent(AudioDislayComponent) {
-    setTrackTimeElapsedComponent(AudioDislayComponent);
-  }
+  // function getTrackProgressComponent(AudioDislayComponent) {
+  //   setTrackTimeElapsedComponent(AudioDislayComponent);
+  // }
 
   return (
     <div className="App">
@@ -246,7 +247,7 @@ function App({ SONGS }) {
         handlePrevSong={handlePrevSong}
         handleNextSong={handleNextSong}
         track={SONGS[trackIndex].songUrl}
-        getTrackProgressComponent={getTrackProgressComponent}
+        // getTrackProgressComponent={getTrackProgressComponent}
         ref={audioPlayerRef}
       />
     </div>
