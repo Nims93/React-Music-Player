@@ -65,7 +65,7 @@ function reducer(state, action) {
     case 'toggle-mute':
       return {
         ...state,
-        isMuted: !state.isMuted,
+        isMuted: action?.payload || !state.isMuted,
       };
 
     default:
@@ -104,7 +104,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
     />
   );
 
-  //handle track/src switching
+  //handle track/src change
   useEffect(() => {
     audioRef.current.src = track;
     const playPromise = audioRef.current.play();
@@ -127,7 +127,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
     }
   }, [trackProgress, repeatSong]);
 
-  //creates timeout callback for tracking current elapsed track time.
+  //timeout callback for tracking current elapsed track time.
   //called whenever that track plays and when elapsed track time changes
   useEffect(() => {
     if (isPlaying) {
