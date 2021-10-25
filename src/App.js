@@ -78,7 +78,6 @@ function App({ SONGS }) {
   const [state, dispatch] = useReducer(reducer, initState);
   const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted, trackIndex } =
     state;
-  const audioPlayerRef = useRef(null);
 
   const trackTimeElapsedComponent = (
     <AudioTimeDisplay
@@ -157,8 +156,10 @@ function App({ SONGS }) {
   function handleTrackSelect(idx) {
     //reset time elasped component to 0
     if (idx !== trackIndex) {
-      audioPlayerRef.current.unmountTrack();
+      // audioPlayerRef.current.unmountTrack();
       // setTrackIndex(idx);
+      dispatch({ type: 'unmount-track' });
+
       dispatch({ type: 'set-track-index', payload: idx });
     }
   }
@@ -270,8 +271,6 @@ function App({ SONGS }) {
         trackLoaded={trackLoaded}
         audioRef={audioRef}
         track={SONGS[trackIndex].songUrl}
-        // getTrackProgressComponent={getTrackProgressComponent}
-        ref={audioPlayerRef}
       />
     </div>
   );

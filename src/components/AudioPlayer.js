@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import SeekBar from './SeekBar';
 import MediaButton from './MediaButton';
-import AudioTimeDisplay from './AudioTimeDisplay';
+// import AudioTimeDisplay from './AudioTimeDisplay';
 import VolumeSlider from './VolumeSlider';
 
 import { ReactComponent as BackwardsIcon } from './../assets/skip-backward-fill.svg';
@@ -20,71 +20,71 @@ import { ReactComponent as RepeatIcon } from './../assets/arrow-repeat.svg';
 import { ReactComponent as VolumeIcon } from './../assets/volume-icon.svg';
 import { ReactComponent as VolumeMuteIcon } from './../assets/volume-mute-icon.svg';
 
-function convertToMinsAndSecs(time) {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time - minutes * 60);
+// function convertToMinsAndSecs(time) {
+//   const minutes = Math.floor(time / 60);
+//   const seconds = Math.floor(time - minutes * 60);
 
-  let secondsValue;
-  secondsValue = seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
-  return `${minutes}:${secondsValue}`;
-}
+//   let secondsValue;
+//   secondsValue = seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
+//   return `${minutes}:${secondsValue}`;
+// }
 
-function reducer(state, action) {
-  switch (action.type) {
-    case 'play-pause':
-      return {
-        ...state,
-        isPlaying: action?.payload || !state.isPlaying,
-      };
+// function reducer(state, action) {
+//   switch (action.type) {
+//     case 'play-pause':
+//       return {
+//         ...state,
+//         isPlaying: action?.payload || !state.isPlaying,
+//       };
 
-    case 'set-track-loaded-state':
-      return {
-        ...state,
-        trackLoaded: action.payload,
-      };
+//     case 'set-track-loaded-state':
+//       return {
+//         ...state,
+//         trackLoaded: action.payload,
+//       };
 
-    case 'set-track-progress':
-      return {
-        ...state,
-        trackProgress: action.payload,
-      };
+//     case 'set-track-progress':
+//       return {
+//         ...state,
+//         trackProgress: action.payload,
+//       };
 
-    case 'unmount-track':
-      return {
-        ...state,
-        trackProgress: 0,
-        trackLoaded: false,
-      };
+//     case 'unmount-track':
+//       return {
+//         ...state,
+//         trackProgress: 0,
+//         trackLoaded: false,
+//       };
 
-    case 'toggle-repeat':
-      return {
-        ...state,
-        repeatSong: !state.repeatSong,
-      };
+//     case 'toggle-repeat':
+//       return {
+//         ...state,
+//         repeatSong: !state.repeatSong,
+//       };
 
-    case 'toggle-mute':
-      return {
-        ...state,
-        isMuted: action?.payload || !state.isMuted,
-      };
+//     case 'toggle-mute':
+//       return {
+//         ...state,
+//         isMuted: action?.payload || !state.isMuted,
+//       };
 
-    default:
-      return state;
-  }
-}
+//     default:
+//       return state;
+//   }
+// }
 
-const initialState = {
-  trackLoaded: false,
-  trackProgress: 0,
-  isPlaying: false,
-  repeatSong: false,
-  isMuted: false,
-};
+// const initialState = {
+//   trackLoaded: false,
+//   trackProgress: 0,
+//   isPlaying: false,
+//   repeatSong: false,
+//   isMuted: false,
+// };
 
 export default forwardRef(function AudioPlayer(props, ref) {
   // const audioRef = useRef(new Audio());
-  const timeoutRef = useRef(null);
-  const [state, dispatch] = useReducer(reducer, initialState);
+  // const timeoutRef = useRef(null);
+  // const [state, dispatch] = useReducer(reducer, initialState);
   // const { trackLoaded, trackProgress } = state;
   // repeatSong,isMuted
   const {
@@ -103,15 +103,13 @@ export default forwardRef(function AudioPlayer(props, ref) {
     trackProgress,
     trackLoaded,
     audioRef,
-    track,
-    // getTrackProgressComponent,
   } = props;
 
-  useImperativeHandle(ref, () => ({
-    //resets trackElapsedTimeComponent when a track is selected from track selector
-    //resets track elasped time display when track is selcted from track selector
-    unmountTrack: () => dispatch({ type: 'unmount-track' }),
-  }));
+  // useImperativeHandle(ref, () => ({
+  //resets trackElapsedTimeComponent when a track is selected from track selector
+  //resets track elasped time display when track is selcted from track selector
+  //   unmountTrack: () => dispatch({ type: 'unmount-track' }),
+  // }));
 
   // const trackTimeElapsedComponent = (
   //   <AudioTimeDisplay
@@ -124,38 +122,38 @@ export default forwardRef(function AudioPlayer(props, ref) {
   // );
 
   //handle track/src change
-  useEffect(() => {
-    audioRef.current.src = track;
-    const playPromise = audioRef.current.play();
-    playPromise &&
-      playPromise
-        .then(() => {
-          !isPlaying && audioRef.current.pause();
-          dispatch({ type: 'set-track-loaded-state', payload: true });
-        })
-        .catch((error) => {});
-  }, [track]);
+  // useEffect(() => {
+  //   audioRef.current.src = track;
+  //   const playPromise = audioRef.current.play();
+  //   playPromise &&
+  //     playPromise
+  //       .then(() => {
+  //         !isPlaying && audioRef.current.pause();
+  //         dispatch({ type: 'set-track-loaded-state', payload: true });
+  //       })
+  //       .catch((error) => {});
+  // }, [track]);
 
-  useEffect(() => {
-    if (audioRef.current.ended && repeatSong) {
-      dispatch({ type: 'set-track-progress', payload: 0 });
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    } else if (audioRef.current.ended && !repeatSong) {
-      // nextSong();
-    }
-  }, [trackProgress, repeatSong]);
+  // useEffect(() => {
+  //   if (audioRef.current.ended && repeatSong) {
+  //     dispatch({ type: 'set-track-progress', payload: 0 });
+  //     audioRef.current.currentTime = 0;
+  //     audioRef.current.play();
+  //   } else if (audioRef.current.ended && !repeatSong) {
+  //     // nextSong();
+  //   }
+  // }, [trackProgress, repeatSong]);
 
   //timeout callback for tracking current elapsed track time.
   //called whenever that track plays and when elapsed track time changes
-  useEffect(() => {
-    if (isPlaying) {
-      timeoutRef.current = setTimeout(() => {
-        const audioTime = audioRef.current.currentTime;
-        dispatch({ type: 'set-track-progress', payload: audioTime });
-      }, 500);
-    }
-  }, [isPlaying, trackProgress, trackLoaded]);
+  // useEffect(() => {
+  //   if (isPlaying) {
+  //     timeoutRef.current = setTimeout(() => {
+  //       const audioTime = audioRef.current.currentTime;
+  //       dispatch({ type: 'set-track-progress', payload: audioTime });
+  //     }, 500);
+  //   }
+  // }, [isPlaying, trackProgress, trackLoaded]);
 
   //sends <AudioTimeDisplay /> component up to App component to be sent back
   //down to artwork display component
