@@ -1,19 +1,23 @@
-import React, { useRef, useEffect, useReducer, useState, useMemo } from 'react';
-import AudioPlayer from './components/AudioPlayer';
+import React, { useRef, useEffect, useReducer, useMemo } from 'react';
+import AudioPlayerBar from './components/AudioPlayerBar';
 import ArtworkDisplay from './components/ArtworkMain';
 import TrackListView from './components/TrackListView';
 import AudioTimeDisplay from './components/AudioTimeDisplay';
 
-function convertToMinsAndSecs(time) {
+const convertToMinsAndSecs = (time) => {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time - minutes * 60);
-
-  let secondsValue;
-  secondsValue = seconds < 10 ? (secondsValue = '0' + seconds) : (secondsValue = seconds);
+  const secondsValue = seconds < 10 ? '0' + seconds : seconds;
   return `${minutes}:${secondsValue}`;
-}
+};
 
-function reducer(state, action) {
+const nextTrackName = (SONGS, currIdx) =>
+  currIdx + 1 > SONGS.length - 1 ? SONGS[0].name : SONGS[currIdx + 1].name;
+
+const nextTrackArtist = (SONGS, currIdx) =>
+  currIdx + 1 > SONGS.length - 1 ? SONGS[0].artist : SONGS[currIdx + 1].artist;
+
+const reducer = (state, action) => {
   switch (action.type) {
     case 'play/pause':
       return {
@@ -61,7 +65,7 @@ function reducer(state, action) {
     default:
       return state;
   }
-}
+};
 
 const initState = {
   trackLoaded: false,
@@ -88,22 +92,16 @@ function App({ SONGS }) {
       }
     />
   );
-  console.log('App component rerender');
-  const track = useMemo(() => SONGS[trackIndex].songUrl, [SONGS, trackIndex]);
+  // console.log('App component rerender');
+  const track = SONGS[trackIndex].songUrl;
 
-  const nextTrackName =
-    trackIndex + 1 > SONGS.length - 1 ? SONGS[0].name : SONGS[trackIndex + 1].name;
-
-  const nextTrackArtist =
-    trackIndex + 1 > SONGS.length - 1 ? SONGS[0].artist : SONGS[trackIndex + 1].artist;
-
-  //handle track/src change
   useEffect(() => {
     audioRef.current.src = track;
     const playPromise = audioRef.current.play();
     playPromise &&
       playPromise
         .then(() => {
+          console.log('callback');
           !isPlaying && audioRef.current.pause();
           dispatch({ type: 'set-track-loaded-state', payload: true });
         })
@@ -125,6 +123,7 @@ function App({ SONGS }) {
   useEffect(() => {
     if (isPlaying) {
       timeoutRef.current = setTimeout(() => {
+        console.log('timeout callback');
         const audioCurrentTimeElapsed = audioRef.current.currentTime;
         dispatch({ type: 'set-track-progress', payload: audioCurrentTimeElapsed });
       }, 500);
@@ -136,6 +135,7 @@ function App({ SONGS }) {
       dispatch({ type: 'set-track-progress', payload: 0 });
       audioRef.current.currentTime = 0;
     } else {
+      audioRef.current.pause();
       dispatch({ type: 'unmount-track' });
       clearTimeout(timeoutRef);
       trackIndex - 1 < 0
@@ -145,6 +145,8 @@ function App({ SONGS }) {
   }
 
   function handleNextSong() {
+    audioRef.current.pause();
+
     dispatch({ type: 'unmount-track' });
     clearTimeout(timeoutRef);
     // trackIndex + 1 > SONGS.length - 1 ? setTrackIndex(0) : setTrackIndex(trackIndex + 1);
@@ -154,12 +156,8 @@ function App({ SONGS }) {
   }
 
   function handleTrackSelect(idx) {
-    //reset time elasped component to 0
     if (idx !== trackIndex) {
-      // audioPlayerRef.current.unmountTrack();
-      // setTrackIndex(idx);
       dispatch({ type: 'unmount-track' });
-
       dispatch({ type: 'set-track-index', payload: idx });
     }
   }
@@ -242,8 +240,8 @@ function App({ SONGS }) {
           trackName={SONGS[trackIndex].name}
           trackArtist={SONGS[trackIndex].artist}
           imgUrl={SONGS[trackIndex].imgUrl}
-          nextTrackName={nextTrackName}
-          nextTrackArtist={nextTrackArtist}
+          nextTrackName={nextTrackName(SONGS, trackIndex)}
+          nextTrackArtist={nextTrackArtist(SONGS, trackIndex)}
           trackDurationComponent={trackTimeElapsedComponent}
         />
 
@@ -254,7 +252,7 @@ function App({ SONGS }) {
         />
       </div>
 
-      <AudioPlayer
+      <AudioPlayerBar
         playPause={playPause}
         isPlaying={isPlaying}
         handleRepeatButtonClick={handleRepeatButtonClick}

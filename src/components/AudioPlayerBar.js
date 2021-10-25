@@ -13,7 +13,7 @@ import { ReactComponent as RepeatIcon } from './../assets/arrow-repeat.svg';
 import { ReactComponent as VolumeIcon } from './../assets/volume-icon.svg';
 import { ReactComponent as VolumeMuteIcon } from './../assets/volume-mute-icon.svg';
 
-export default function AudioPlayer(props) {
+export default function AudioPlayerBar(props) {
   const {
     playPause,
     isPlaying,
