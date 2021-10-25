@@ -246,6 +246,8 @@ function App({ SONGS }) {
         isPlaying={isPlaying}
         handlePrevSong={handlePrevSong}
         handleNextSong={handleNextSong}
+        seekMinus10Seconds={seekMinus10Seconds}
+        seekPlus10Seconds={seekPlus10Seconds}
         track={SONGS[trackIndex].songUrl}
         // getTrackProgressComponent={getTrackProgressComponent}
         ref={audioPlayerRef}

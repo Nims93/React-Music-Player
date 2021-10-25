@@ -91,6 +91,8 @@ export default forwardRef(function AudioPlayer(props, ref) {
     isPlaying,
     handleNextSong,
     handlePrevSong,
+    seekMinus10Seconds,
+    seekPlus10Seconds,
     track,
     // getTrackProgressComponent,
   } = props;
@@ -163,26 +165,26 @@ export default forwardRef(function AudioPlayer(props, ref) {
   //   }
   // }
 
-  function seekMinus10Seconds() {
-    if (audioRef.current.currentTime <= 10) {
-      audioRef.current.currentTime = 0;
-      dispatch({ type: 'set-track-progress', payload: 0 });
-    } else {
-      const time = audioRef.current.currentTime - 10;
-      audioRef.current.currentTime = time;
-      dispatch({ type: 'set-track-progress', payload: time });
-    }
-  }
+  // function seekMinus10Seconds() {
+  //   if (audioRef.current.currentTime <= 10) {
+  //     audioRef.current.currentTime = 0;
+  //     dispatch({ type: 'set-track-progress', payload: 0 });
+  //   } else {
+  //     const time = audioRef.current.currentTime - 10;
+  //     audioRef.current.currentTime = time;
+  //     dispatch({ type: 'set-track-progress', payload: time });
+  //   }
+  // }
 
-  function seekPlus10Seconds() {
-    if (audioRef.current.duration - audioRef.current.currentTime < 10) {
-      // nextSong();
-    } else {
-      const time = (audioRef.current.currentTime += 10);
-      audioRef.current.currentTime = time;
-      dispatch({ type: 'set-track-progress', payload: time });
-    }
-  }
+  // function seekPlus10Seconds() {
+  //   if (audioRef.current.duration - audioRef.current.currentTime < 10) {
+  //     // nextSong();
+  //   } else {
+  //     const time = (audioRef.current.currentTime += 10);
+  //     audioRef.current.currentTime = time;
+  //     dispatch({ type: 'set-track-progress', payload: time });
+  //   }
+  // }
 
   function seekBarScrub(mouseDownXCoord, seekBarWidth) {
     const percentage = ((mouseDownXCoord / seekBarWidth) * 100) / 100;
