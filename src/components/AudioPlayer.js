@@ -85,7 +85,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
   // const audioRef = useRef(new Audio());
   const timeoutRef = useRef(null);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { trackLoaded, trackProgress } = state;
+  // const { trackLoaded, trackProgress } = state;
   // repeatSong,isMuted
   const {
     playPause,
@@ -99,6 +99,9 @@ export default forwardRef(function AudioPlayer(props, ref) {
     handlePrevSong,
     seekMinus10Seconds,
     seekPlus10Seconds,
+    seekBarScrub,
+    trackProgress,
+    trackLoaded,
     audioRef,
     track,
     // getTrackProgressComponent,
@@ -193,14 +196,14 @@ export default forwardRef(function AudioPlayer(props, ref) {
   //   }
   // }
 
-  function seekBarScrub(mouseDownXCoord, seekBarWidth) {
-    const percentage = ((mouseDownXCoord / seekBarWidth) * 100) / 100;
-    const newNum = percentage * Math.round(audioRef.current.duration);
+  // function seekBarScrub(mouseDownXCoord, seekBarWidth) {
+  //   const percentage = ((mouseDownXCoord / seekBarWidth) * 100) / 100;
+  //   const newNum = percentage * Math.round(audioRef.current.duration);
 
-    clearTimeout(timeoutRef.current);
-    dispatch({ type: 'set-track-progress', payload: newNum });
-    audioRef.current.currentTime = newNum;
-  }
+  //   clearTimeout(timeoutRef.current);
+  //   dispatch({ type: 'set-track-progress', payload: newNum });
+  //   audioRef.current.currentTime = newNum;
+  // }
 
   // function prevSong() {
   //   if (audioRef.current.currentTime > 7) {

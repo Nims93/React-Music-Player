@@ -78,10 +78,7 @@ function App({ SONGS }) {
   const [state, dispatch] = useReducer(reducer, initState);
   const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted, trackIndex } =
     state;
-  const [trackIdx, setTrackIndex] = useState(0);
-  // const [trackTimeElapsedComponent, setTrackTimeElapsedComponent] = useState(null);
   const audioPlayerRef = useRef(null);
-  // const trackIndex = useMemo(() => trackIdx, [trackIdx]);
 
   const trackTimeElapsedComponent = (
     <AudioTimeDisplay
@@ -207,6 +204,15 @@ function App({ SONGS }) {
     }
   }
 
+  function seekBarScrub(mouseDownXCoord, seekBarWidth) {
+    const percentage = ((mouseDownXCoord / seekBarWidth) * 100) / 100;
+    const newNum = percentage * Math.round(audioRef.current.duration);
+
+    clearTimeout(timeoutRef.current);
+    dispatch({ type: 'set-track-progress', payload: newNum });
+    audioRef.current.currentTime = newNum;
+  }
+
   function handleVolume(volume) {
     audioRef.current.volume = volume;
   }
@@ -227,10 +233,6 @@ function App({ SONGS }) {
   function handleRepeatButtonClick() {
     dispatch({ type: 'toggle-repeat' });
   }
-
-  // function getTrackProgressComponent(AudioDislayComponent) {
-  //   setTrackTimeElapsedComponent(AudioDislayComponent);
-  // }
 
   return (
     <div className="App">
@@ -263,6 +265,9 @@ function App({ SONGS }) {
         handleNextSong={handleNextSong}
         seekMinus10Seconds={seekMinus10Seconds}
         seekPlus10Seconds={seekPlus10Seconds}
+        seekBarScrub={seekBarScrub}
+        trackProgress={trackProgress}
+        trackLoaded={trackLoaded}
         audioRef={audioRef}
         track={SONGS[trackIndex].songUrl}
         // getTrackProgressComponent={getTrackProgressComponent}
