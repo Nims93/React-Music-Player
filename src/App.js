@@ -138,7 +138,7 @@ function App({ SONGS }) {
         .then(() => {
           dispatch({ type: 'play/pause' });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   }
 
