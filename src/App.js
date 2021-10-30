@@ -202,6 +202,7 @@ function App({ SONGS }) {
     return () => {
       currentlyPlayingAudio.removeEventListener('timeupdate', handleTimeUpdate);
     };
+    // eslint-disable-next-line
   }, [track]);
 
   useEffect(() => {
