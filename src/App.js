@@ -2,14 +2,6 @@ import React, { useRef, useEffect, useReducer, useCallback } from 'react';
 import AudioPlayerBar from './components/AudioPlayerBar';
 import ArtworkDisplay from './components/ArtworkMain';
 import TrackListView from './components/TrackListView';
-import AudioTimeDisplay from './components/AudioTimeDisplay';
-
-const convertToMinsAndSecs = (time) => {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time - minutes * 60);
-  const secondsValue = seconds < 10 ? '0' + seconds : seconds;
-  return `${minutes}:${secondsValue}`;
-};
 
 const nextTrackName = (SONGS, currIdx) =>
   currIdx + 1 > SONGS.length - 1 ? SONGS[0].name : SONGS[currIdx + 1].name;
@@ -77,21 +69,13 @@ const initState = {
 };
 
 function App({ SONGS }) {
+  // const timeoutRef = useRef(null);
   const audioRef = useRef(new Audio());
-  const timeoutRef = useRef(null);
   const [state, dispatch] = useReducer(reducer, initState);
   const { trackLoaded, trackProgress, isPlaying, repeatSong, isMuted, trackIndex } =
     state;
 
-  const trackTimeElapsedComponent = (
-    <AudioTimeDisplay
-      className="elapsed-time-wrapper"
-      currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
-      songLength={
-        trackLoaded ? convertToMinsAndSecs(audioRef.current.duration) : `${NaN}`
-      }
-    />
-  );
+  const trackTotalDuration = audioRef.current.duration;
 
   const track = SONGS[trackIndex].songUrl;
 
@@ -102,7 +86,6 @@ function App({ SONGS }) {
     } else {
       audioRef.current.pause();
       dispatch({ type: 'unmount-track' });
-      clearTimeout(timeoutRef);
       trackIndex - 1 < 0
         ? dispatch({ type: 'set-track-index', payload: SONGS.length - 1 })
         : dispatch({ type: 'set-track-index', payload: trackIndex - 1 });
@@ -111,7 +94,6 @@ function App({ SONGS }) {
 
   const handleNextSong = useCallback(() => {
     dispatch({ type: 'unmount-track' });
-    clearTimeout(timeoutRef);
     // trackIndex + 1 > SONGS.length - 1 ? setTrackIndex(0) : setTrackIndex(trackIndex + 1);
     trackIndex + 1 > SONGS.length - 1
       ? dispatch({ type: 'set-track-index', payload: 0 })
@@ -173,7 +155,6 @@ function App({ SONGS }) {
     const percentage = ((mouseDownXCoord / seekBarWidth) * 100) / 100;
     const newNum = percentage * Math.round(audioRef.current.duration);
 
-    clearTimeout(timeoutRef.current);
     dispatch({ type: 'set-track-progress', payload: newNum });
     audioRef.current.currentTime = newNum;
   }, []);
@@ -200,7 +181,7 @@ function App({ SONGS }) {
   }
 
   useEffect(() => {
-    const loadTrack = async () => {
+    (async () => {
       audioRef.current.src = track;
       try {
         await audioRef.current.play();
@@ -209,15 +190,14 @@ function App({ SONGS }) {
       } catch (e) {
         console.error(e);
       }
-    };
-    loadTrack();
+    })();
 
     const handleTimeUpdate = () => {
       const audioCurrentTimeElapsed = audioRef.current.currentTime;
       dispatch({ type: 'set-track-progress', payload: audioCurrentTimeElapsed });
     };
-    const currentlyPlayingAudio = audioRef.current;
 
+    const currentlyPlayingAudio = audioRef.current;
     currentlyPlayingAudio.addEventListener('timeupdate', handleTimeUpdate);
     return () => {
       currentlyPlayingAudio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -243,7 +223,9 @@ function App({ SONGS }) {
           imgUrl={SONGS[trackIndex].imgUrl}
           nextTrackName={nextTrackName(SONGS, trackIndex)}
           nextTrackArtist={nextTrackArtist(SONGS, trackIndex)}
-          trackDurationComponent={trackTimeElapsedComponent}
+          trackProgress={trackProgress}
+          trackTotalDuration={trackTotalDuration}
+          trackLoaded={trackLoaded}
         />
 
         <TrackListView

@@ -1,4 +1,12 @@
 import React from 'react';
+import AudioTimeDisplay from './AudioTimeDisplay';
+
+const convertToMinsAndSecs = (time) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time - minutes * 60);
+  const secondsValue = seconds < 10 ? '0' + seconds : seconds;
+  return `${minutes}:${secondsValue}`;
+};
 
 export default function ArtworkDisplay(props) {
   const {
@@ -7,7 +15,9 @@ export default function ArtworkDisplay(props) {
     imgUrl,
     nextTrackName,
     nextTrackArtist,
-    trackDurationComponent,
+    trackProgress,
+    trackTotalDuration,
+    trackLoaded,
   } = props;
 
   return (
@@ -24,8 +34,11 @@ export default function ArtworkDisplay(props) {
         <h1>{trackName}</h1>
         <h2>{trackArtist}</h2>
       </div>
-
-      {trackDurationComponent}
+      <AudioTimeDisplay
+        className="elapsed-time-wrapper"
+        currentTimeElapsed={trackLoaded ? convertToMinsAndSecs(trackProgress) : `${NaN}`}
+        songLength={trackLoaded ? convertToMinsAndSecs(trackTotalDuration) : `${NaN}`}
+      />
       <h3>
         Next Up: <span>{`${nextTrackName} by ${nextTrackArtist}`}</span>
       </h3>
