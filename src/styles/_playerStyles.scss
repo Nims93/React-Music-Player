@@ -71,27 +71,30 @@
     justify-self: end;
     align-self: center;
     position: relative;
+
+    svg {
+      fill: rgb(87, 87, 87);
+    }
+
+    &:hover {
+      svg {
+        fill: rgb(87, 87, 87);
+      }
+    }
   }
 
   .repeat.active {
     color: white;
-  }
 
-  .repeat.active::after {
-    content: '1';
-    font-size: 0.8em;
-    position: absolute;
-    top: 27%;
-    left: 36%;
-    color: hsl(0, 0%, 80%);
-    transition: all 0.1s linear;
-  }
+    svg {
+      fill: white;
+    }
 
-  .repeat.active:hover::after {
-    color: white;
-    filter: blur(0.5px);
-    transform: scale(1.18);
-    transition: all 0.1s linear;
+    &:hover {
+      svg {
+        fill: white;
+      }
+    }
   }
 
   .playpause-seek-buttons {
@@ -109,16 +112,17 @@
         content: '10';
         color: hsl(0, 0%, 80%);
         font-size: 0.8em;
-        top: 27%;
-        left: 27%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         position: absolute;
         transition: all 0.1s linear;
       }
 
       &:hover::after {
         color: white;
+        font-size: 1em;
         filter: blur(0.4px);
-        transform: scale(1.18);
         transition: all 0.1s linear;
       }
     }
